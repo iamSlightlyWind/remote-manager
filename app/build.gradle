@@ -26,6 +26,12 @@ android {
         sourceCompatibility JavaVersion.VERSION_21
         targetCompatibility JavaVersion.VERSION_21
     }
+
+    packagingOptions {
+        resources {
+            excludes += "META-INF/versions/9/OSGI-INF/MANIFEST.MF"
+        }
+    }
 }
 
 dependencies {
@@ -37,6 +43,9 @@ dependencies {
     implementation libs.window
     implementation "androidx.window:window:1.4.0"
     implementation "androidx.window:window-java:1.4.0"
+    implementation 'com.hierynomus:sshj:0.40.0'
+    implementation 'org.bouncycastle:bcprov-jdk18on:1.81'
+    implementation 'org.bouncycastle:bcpkix-jdk18on:1.81'
     testImplementation libs.junit
     androidTestImplementation libs.ext.junit
     androidTestImplementation libs.espresso.core

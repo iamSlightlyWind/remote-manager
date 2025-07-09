@@ -1,11 +1,9 @@
 package dev.themajorones.remotemanager;
 
-import static androidx.window.layout.FoldingFeature.State.FLAT;
-import static androidx.window.layout.FoldingFeature.State.HALF_OPENED;
-
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.widget.Button;
 import android.widget.TextView;
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -18,6 +16,8 @@ import androidx.window.layout.WindowInfoTracker;
 import androidx.window.layout.WindowLayoutInfo;
 import androidx.window.java.layout.WindowInfoTrackerCallbackAdapter;
 import androidx.core.util.Consumer;
+import dev.themajorones.remotemanager.utils.DeviceInfo;
+import dev.themajorones.remotemanager.utils.SecureShellUtils;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -32,6 +32,22 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         deviceInfoTextView = findViewById(R.id.deviceInfoTextView);
+        TextView sshValueTextView = findViewById(R.id.sshValue);
+        Button sshButton = findViewById(R.id.sshButton);
+
+        sshButton.setOnClickListener(v -> {
+            new Thread(() -> {
+                try {
+                    SecureShellUtils sshUtils = new SecureShellUtils();
+                    sshUtils.connect("windstation.themajorones.dev", 22, "slightlywind", "301203", null);
+                    String result = sshUtils.runCommand("uname -a");
+                    sshUtils.disconnect();
+                    runOnUiThread(() -> sshValueTextView.setText(result));
+                } catch (Exception e) {
+                    runOnUiThread(() -> sshValueTextView.setText(e.getMessage()));
+                }
+            }).start();
+        });
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
@@ -72,50 +88,16 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void updateDeviceInfo() {
-        String deviceType = getDeviceType();
-        boolean foldable = isFoldable();
-        boolean unfolded = isUnfolded();
-        boolean folded = isFolded();
-        boolean foldedHalfway = isFoldedHalfway();
+        String deviceType = DeviceInfo.getDeviceType(getResources());
+        boolean foldable = DeviceInfo.isFoldable(foldingFeature);
+        boolean unfolded = DeviceInfo.isUnfolded(foldingFeature);
+        boolean folded = DeviceInfo.isFolded(foldingFeature);
+        boolean foldedHalfway = DeviceInfo.isFoldedHalfway(foldingFeature);
         String info = "Device Type: " + deviceType + "\n" +
                       "Is Foldable: " + foldable + "\n" +
                       "Is Unfolded: " + unfolded + "\n" +
                       "Is Folded: " + folded + "\n" +
                       "Is Folded Halfway: " + foldedHalfway;
         deviceInfoTextView.setText(info);
-    }
-
-    private String getDeviceType() {
-        int sw = getResources().getConfiguration().smallestScreenWidthDp;
-        return sw >= 600 ? "Tablet" : "Phone";
-    }
-
-    private String getFoldingState() {
-        if (foldingFeature == null) {
-            return "Not Foldable";
-        }
-        if (isFoldedHalfway()) {
-            return "Folded Halfway";
-        } else if (isFolded()) {
-            return "Folded";
-        } else {
-            return "Not Folded";
-        }
-    }
-
-    private boolean isFolded() {
-        return isFoldable() && foldingFeature.getState() != FLAT && foldingFeature.getState() != HALF_OPENED;
-    }
-
-    private boolean isFoldedHalfway() {
-        return isFoldable() && foldingFeature.getState() == HALF_OPENED;
-    }
-
-    private boolean isFoldable() {
-        return foldingFeature != null;
-    }
-
-    private boolean isUnfolded() {
-        return isFoldable() && foldingFeature.getState() == FLAT;
     }
 }
