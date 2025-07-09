@@ -17,6 +17,7 @@ import androidx.window.layout.WindowLayoutInfo;
 import androidx.window.java.layout.WindowInfoTrackerCallbackAdapter;
 import androidx.core.util.Consumer;
 import dev.themajorones.remotemanager.utils.DeviceInfo;
+import dev.themajorones.remotemanager.utils.Preload;
 import dev.themajorones.remotemanager.utils.SecureShellUtils;
 
 public class MainActivity extends AppCompatActivity {
@@ -29,6 +30,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
+        Preload.load(this);
         setContentView(R.layout.activity_main);
 
         deviceInfoTextView = findViewById(R.id.deviceInfoTextView);
