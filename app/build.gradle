@@ -4,12 +4,12 @@ plugins {
 
 android {
     namespace 'dev.themajorones.remotemanager'
-    compileSdk 36
+    compileSdk 35
 
     defaultConfig {
         applicationId "dev.themajorones.remotemanager"
         minSdk 29
-        targetSdk 36
+        targetSdk 35
         versionCode 1
         versionName "1.0"
 
@@ -23,8 +23,8 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_11
-        targetCompatibility JavaVersion.VERSION_11
+        sourceCompatibility JavaVersion.VERSION_21
+        targetCompatibility JavaVersion.VERSION_21
     }
 }
 
@@ -34,6 +34,9 @@ dependencies {
     implementation libs.material
     implementation libs.activity
     implementation libs.constraintlayout
+    implementation libs.window
+    implementation "androidx.window:window:1.4.0"
+    implementation "androidx.window:window-java:1.4.0"
     testImplementation libs.junit
     androidTestImplementation libs.ext.junit
     androidTestImplementation libs.espresso.core

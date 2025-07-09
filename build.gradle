@@ -2,3 +2,7 @@
 plugins {
 alias(libs.plugins.android.application) apply false
 }
+ext {
+    sourceCompatibility = JavaVersion.VERSION_21
+    targetCompatibility = JavaVersion.VERSION_21
+}
