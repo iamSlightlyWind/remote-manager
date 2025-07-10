@@ -7,30 +7,36 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
+    <Button
+        android:id="@+id/sshButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:text="SSH"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/deviceInfoTextView" />
+
+    <TextView
+        android:id="@+id/sshValue"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:text="SSH Value"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/sshButton" />
+
     <TextView
         android:id="@+id/deviceInfoTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Device Info"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
-        tools:layout_editor_absoluteY="310dp" />
+        tools:layout_editor_absoluteY="37dp" />
 
-    <Button
-        android:id="@+id/sshButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="SSH"
-        app:layout_constraintTop_toBottomOf="@id/deviceInfoTextView"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
-
-    <TextView
-        android:id="@+id/sshValue"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="SSH Value"
-        app:layout_constraintTop_toBottomOf="@id/sshButton"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

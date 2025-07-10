@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -16,9 +17,10 @@ import androidx.window.layout.WindowInfoTracker;
 import androidx.window.layout.WindowLayoutInfo;
 import androidx.window.java.layout.WindowInfoTrackerCallbackAdapter;
 import androidx.core.util.Consumer;
+import java.util.logging.Level;
+import dev.themajorones.remotemanager.entities.SecureShell;
 import dev.themajorones.remotemanager.utils.DeviceInfo;
 import dev.themajorones.remotemanager.utils.Preload;
-import dev.themajorones.remotemanager.utils.SecureShellUtils;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -37,27 +39,14 @@ public class MainActivity extends AppCompatActivity {
         TextView sshValueTextView = findViewById(R.id.sshValue);
         Button sshButton = findViewById(R.id.sshButton);
 
-        sshButton.setOnClickListener(v -> {
-            new Thread(() -> {
-                try {
-                    SecureShellUtils sshUtils = new SecureShellUtils();
-                    sshUtils.connect("windstation.themajorones.dev", 22, "slightlywind", "301203", null);
-                    String result = sshUtils.runCommand("uname -a");
-                    sshUtils.disconnect();
-                    runOnUiThread(() -> sshValueTextView.setText(result));
-                } catch (Exception e) {
-                    runOnUiThread(() -> sshValueTextView.setText(e.getMessage()));
-                }
-            }).start();
-        });
-
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
 
-        WindowInfoTrackerCallbackAdapter adapter = new WindowInfoTrackerCallbackAdapter(WindowInfoTracker.getOrCreate(this));
+        WindowInfoTrackerCallbackAdapter adapter = new WindowInfoTrackerCallbackAdapter(
+                WindowInfoTracker.getOrCreate(this));
 
         adapter.addWindowLayoutInfoListener(
                 this,
@@ -96,10 +85,10 @@ public class MainActivity extends AppCompatActivity {
         boolean folded = DeviceInfo.isFolded(foldingFeature);
         boolean foldedHalfway = DeviceInfo.isFoldedHalfway(foldingFeature);
         String info = "Device Type: " + deviceType + "\n" +
-                      "Is Foldable: " + foldable + "\n" +
-                      "Is Unfolded: " + unfolded + "\n" +
-                      "Is Folded: " + folded + "\n" +
-                      "Is Folded Halfway: " + foldedHalfway;
+                "Is Foldable: " + foldable + "\n" +
+                "Is Unfolded: " + unfolded + "\n" +
+                "Is Folded: " + folded + "\n" +
+                "Is Folded Halfway: " + foldedHalfway;
         deviceInfoTextView.setText(info);
     }
 }

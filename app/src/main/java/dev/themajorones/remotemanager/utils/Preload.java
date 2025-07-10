@@ -8,6 +8,7 @@ public class Preload {
 
     public static void load(AppCompatActivity activity) {
         preventRotation(activity);
+        enableSSHJDebugLogging();
     }
 
     private static void preventRotation(AppCompatActivity activity) {
@@ -16,5 +17,10 @@ public class Preload {
         if (!isTablet) {
             activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         }
+    }
+
+    private static void enableSSHJDebugLogging() {
+        System.setProperty("org.slf4j.simpleLogger.defaultLogLevel", "trace");
+        System.setProperty("org.slf4j.simpleLogger.log.net.schmizz.sshj", "debug");
     }
 }

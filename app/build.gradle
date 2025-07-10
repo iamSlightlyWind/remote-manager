@@ -46,6 +46,13 @@ dependencies {
     implementation 'com.hierynomus:sshj:0.40.0'
     implementation 'org.bouncycastle:bcprov-jdk18on:1.81'
     implementation 'org.bouncycastle:bcpkix-jdk18on:1.81'
+    implementation "androidx.room:room-runtime:2.7.2"
+    implementation "androidx.room:room-rxjava2:2.7.2"
+    implementation "androidx.room:room-rxjava3:2.7.2"
+    implementation 'org.slf4j:slf4j-simple:2.0.17'
+    compileOnly 'org.projectlombok:lombok:1.18.38'
+    annotationProcessor "androidx.room:room-compiler:2.7.2"
+    annotationProcessor 'org.projectlombok:lombok:1.18.38'
     testImplementation libs.junit
     androidTestImplementation libs.ext.junit
     androidTestImplementation libs.espresso.core

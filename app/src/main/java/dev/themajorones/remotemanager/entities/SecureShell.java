@@ -1,4 +1,4 @@
-package dev.themajorones.remotemanager.utils;
+package dev.themajorones.remotemanager.entities;
 
 import net.schmizz.sshj.SSHClient;
 import net.schmizz.sshj.connection.channel.direct.Session;
@@ -9,7 +9,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.security.Security;
 
-public class SecureShellUtils {
+public class SecureShell {
 
     static {
         Security.removeProvider("BC");
@@ -22,7 +22,7 @@ public class SecureShellUtils {
 
     private final SSHClient sshClient;
 
-    public SecureShellUtils() {
+    public SecureShell() {
         Security.removeProvider("BC");
         Security.insertProviderAt(new BouncyCastleProvider(), 1);
         this.sshClient = new SSHClient();
