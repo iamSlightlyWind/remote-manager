@@ -1,3 +1,25 @@
 <resources>
     <string name="app_name">Remote Manager</string>
+    <string name="device_info">DeviceInfo</string>
+    <string name="action">Action</string>
+    <string name="edit">Edit</string>
+    <string name="host">Host</string>
+    <string name="os">OS</string>
+    <string name="cpu">CPU</string>
+    <string name="ram">RAM</string>
+    <string name="swap">Swap</string>
+    <string name="uptime">Uptime</string>
+    <string name="username">Username</string>
+    <string name="password">Password</string>
+    <string name="port">Port</string>
+    <string name="mac_address">MAC Address</string>
+    <string name="enter_host">Enter host</string>
+    <string name="enter_username">Enter username</string>
+    <string name="enter_password">Enter password</string>
+    <string name="enter_os">Enter OS</string>
+    <string name="enter_port">Enter port</string>
+    <string name="enter_mac_address">Enter MAC Address</string>
+    <string name="reset">Reset</string>
+    <string name="ssh_fill">SSH &amp; Fill</string>
+    <string name="save">Save</string>
 </resources>

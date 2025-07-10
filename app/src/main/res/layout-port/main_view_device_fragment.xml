@@ -18,7 +18,7 @@
             android:id="@+id/logoImageView"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="1"
+            android:layout_weight="2"
             android:padding="8dp"
             app:srcCompat="@drawable/tux" />
 
@@ -26,14 +26,14 @@
             android:id="@+id/deviceInfoTextView"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="2"
+            android:layout_weight="6"
             android:padding="8dp"
-            android:text="DeviceInfo" />
+            android:text="@string/device_info" />
 
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
+            android:layout_weight="2"
             android:orientation="vertical"
             android:padding="8dp">
 
@@ -41,13 +41,13 @@
                 android:id="@+id/actionButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Action" />
+                android:text="@string/action" />
 
             <Button
                 android:id="@+id/editButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Edit" />
+                android:text="@string/edit" />
         </LinearLayout>
     </LinearLayout>
 </LinearLayout>

@@ -35,6 +35,10 @@ public class SSHService {
         return null;
     }
 
+    public Device sshFillInfo(String host, String username, String password){ // ssh into the device to get info (os,
+        return null;
+    }
+
     private boolean connectionExists(Device device) {
         return connections.containsKey(device);
     }
