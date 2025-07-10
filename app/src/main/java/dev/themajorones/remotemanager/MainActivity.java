@@ -26,6 +26,12 @@ public class MainActivity extends AppCompatActivity {
         EdgeToEdge.enable(this);
         Preload.load(this);
         setContentView(R.layout.activity_main);
+        replaceFragment(R.layout.add_device);
+    }
+
+    private void replaceFragment(int layoutResId) {
+        LinearLayout detailPane = findViewById(R.id.detailPane);
+        ViewUtils.replaceViewWithLayout(detailPane, layoutResId);
     }
 
     private void testFragment() {
@@ -51,10 +57,5 @@ public class MainActivity extends AppCompatActivity {
         Device[] devices = {d1, d2, d3, d4, d5, d6, d7, d8, d9, d10};
         DeviceAdapter adapter = new DeviceAdapter(this, java.util.Arrays.asList(devices));
         listView.setAdapter(adapter);
-    }
-
-    private void testReplace() {
-        LinearLayout detailPane = findViewById(R.id.detailPane);
-        ViewUtils.replaceViewWithLayout(detailPane, R.layout.add_device);
     }
 }
