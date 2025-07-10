@@ -26,12 +26,10 @@ public class MainActivity extends AppCompatActivity {
         EdgeToEdge.enable(this);
         Preload.load(this);
         setContentView(R.layout.activity_main);
-        replaceFragment(R.layout.add_device);
-    }
 
-    private void replaceFragment(int layoutResId) {
-        LinearLayout detailPane = findViewById(R.id.detailPane);
-        ViewUtils.replaceViewWithLayout(detailPane, layoutResId);
+        ViewUtils.replaceViewWithLayout(findViewById(R.id.mainContent), R.layout.view_list_detail);
+        ViewUtils.replaceViewWithLayout(findViewById(R.id.detailPane), R.layout.add_device);
+        testFragment();
     }
 
     private void testFragment() {

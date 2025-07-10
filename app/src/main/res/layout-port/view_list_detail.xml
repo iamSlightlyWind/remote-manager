@@ -4,7 +4,7 @@
     android:id="@+id/mainContent"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_weight="29"
+    android:layout_weight="24"
     android:orientation="vertical">
 
     <com.google.android.material.appbar.AppBarLayout
@@ -21,26 +21,18 @@
     </com.google.android.material.appbar.AppBarLayout>
 
     <LinearLayout
+        android:id="@+id/detailPane"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"
-        android:orientation="horizontal">
+        android:layout_weight="14"
+        android:orientation="vertical"
+        android:padding="8dp" />
 
-        <ListView
-            android:id="@+id/listView"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="11"
-            android:padding="8dp" />
-
-        <LinearLayout
-            android:id="@+id/detailPane"
-            android:orientation="vertical"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="17.5"
-            android:padding="8dp" />
-
-    </LinearLayout>
+    <ListView
+        android:id="@+id/listView"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="10"
+        android:padding="8dp" />
 
 </LinearLayout>
