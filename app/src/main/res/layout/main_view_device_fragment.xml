@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:gravity="center"
     android:orientation="vertical"
     android:background="@drawable/rounded_outline">
@@ -22,12 +22,12 @@
             app:srcCompat="@drawable/tux" />
 
         <TextView
-            android:id="@+id/textView"
+            android:id="@+id/deviceInfoTextView"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="2"
             android:padding="8dp"
-            android:text="Sample Text" />
+            android:text="DeviceInfo" />
 
         <LinearLayout
             android:layout_width="0dp"
@@ -37,16 +37,16 @@
             android:orientation="vertical">
 
             <Button
-                android:id="@+id/button1"
+                android:id="@+id/actionButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Button 1" />
+                android:text="Action" />
 
             <Button
-                android:id="@+id/button2"
+                android:id="@+id/editButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Button 2" />
+                android:text="Edit" />
         </LinearLayout>
     </LinearLayout>
 </LinearLayout>
