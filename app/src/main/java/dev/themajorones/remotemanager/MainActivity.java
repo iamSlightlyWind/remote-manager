@@ -1,15 +1,19 @@
 package dev.themajorones.remotemanager;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import android.widget.LinearLayout;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
+
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.window.layout.FoldingFeature;
-import dev.themajorones.remotemanager.adapter.DeviceAdapter;
+
+import dev.themajorones.remotemanager.fragment.AddDeviceFragment;
+import dev.themajorones.remotemanager.fragment.DeviceItemFragment;
 import dev.themajorones.remotemanager.entity.Device;
 import dev.themajorones.remotemanager.utils.Preload;
 import dev.themajorones.remotemanager.utils.ViewUtils;
@@ -20,7 +24,7 @@ public class MainActivity extends AppCompatActivity {
     private TextView deviceInfoTextView;
     private FoldingFeature foldingFeature;
 
-    @Override
+    @SuppressLint("MissingInflatedId") @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
@@ -28,8 +32,19 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         ViewUtils.replaceViewWithLayout(findViewById(R.id.mainContent), R.layout.view_list_detail);
-        ViewUtils.replaceViewWithLayout(findViewById(R.id.detailPane), R.layout.add_device);
+        setupButtonTriggers(savedInstanceState);
         testFragment();
+    }
+
+    private void setupButtonTriggers(Bundle savedInstanceState) { // TODO: use viewutils.replaceElement
+        Button addDeviceButton = findViewById(R.id.addDeviceButton);
+        addDeviceButton.setOnClickListener(v -> {
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.detailPane, new AddDeviceFragment())
+                    .addToBackStack(null)
+                    .commit();
+        });
     }
 
     private void testFragment() {
@@ -52,8 +67,8 @@ public class MainActivity extends AppCompatActivity {
 
         ListView listView = findViewById(R.id.listView);
 
-        Device[] devices = {d1, d2, d3, d4, d5, d6, d7, d8, d9, d10};
-        DeviceAdapter adapter = new DeviceAdapter(this, java.util.Arrays.asList(devices));
+        Device[] devices = { d1, d2, d3, d4, d5, d6, d7, d8, d9, d10 };
+        DeviceItemFragment adapter = new DeviceItemFragment(this, java.util.Arrays.asList(devices));
         listView.setAdapter(adapter);
     }
 }

@@ -22,4 +22,5 @@
     <string name="reset">Reset</string>
     <string name="ssh_fill">SSH &amp; Fill</string>
     <string name="save">Save</string>
+    <string name="add_device">Add Device</string>
 </resources>

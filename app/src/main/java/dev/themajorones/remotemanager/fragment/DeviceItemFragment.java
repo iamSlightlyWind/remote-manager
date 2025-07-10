@@ -1,4 +1,4 @@
-package dev.themajorones.remotemanager.adapter;
+package dev.themajorones.remotemanager.fragment;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -16,9 +16,9 @@ import dev.themajorones.remotemanager.entity.Device;
 
 import java.util.List;
 
-public class DeviceAdapter extends ArrayAdapter<Device> {
+public class DeviceItemFragment extends ArrayAdapter<Device> {
 
-    public DeviceAdapter(@NonNull Context context, @NonNull List<Device> devices) {
+    public DeviceItemFragment(@NonNull Context context, @NonNull List<Device> devices) {
         super(context, 0, devices);
     }
 
@@ -26,7 +26,7 @@ public class DeviceAdapter extends ArrayAdapter<Device> {
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
         if (convertView == null) {
-            convertView = LayoutInflater.from(getContext()).inflate(R.layout.main_view_device_fragment, parent, false);
+            convertView = LayoutInflater.from(getContext()).inflate(R.layout.device_item_fragment, parent, false);
         }
 
         Device device = getItem(position);
