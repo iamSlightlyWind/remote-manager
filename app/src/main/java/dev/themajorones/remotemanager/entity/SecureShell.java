@@ -1,4 +1,4 @@
-package dev.themajorones.remotemanager.entities;
+package dev.themajorones.remotemanager.entity;
 
 import net.schmizz.sshj.SSHClient;
 import net.schmizz.sshj.connection.channel.direct.Session;
@@ -36,6 +36,10 @@ public class SecureShell {
         } else {
             sshClient.authPassword(user, password);
         }
+    }
+
+    public void connect(Device device) throws IOException {
+        connect(device.getHost(), 22, device.getUsername(), device.getPassword(), device.getKeyPath());
     }
 
     public String runCommand(String command) throws IOException {

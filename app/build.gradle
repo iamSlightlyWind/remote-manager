@@ -35,7 +35,6 @@ android {
 }
 
 dependencies {
-
     implementation libs.appcompat
     implementation libs.material
     implementation libs.activity
@@ -49,10 +48,10 @@ dependencies {
     implementation "androidx.room:room-runtime:2.7.2"
     implementation "androidx.room:room-rxjava2:2.7.2"
     implementation "androidx.room:room-rxjava3:2.7.2"
+    annotationProcessor "androidx.room:room-compiler:2.7.2"
     implementation 'org.slf4j:slf4j-simple:2.0.17'
     implementation libs.coordinatorlayout
     compileOnly 'org.projectlombok:lombok:1.18.38'
-    annotationProcessor "androidx.room:room-compiler:2.7.2"
     annotationProcessor 'org.projectlombok:lombok:1.18.38'
     testImplementation libs.junit
     androidTestImplementation libs.ext.junit

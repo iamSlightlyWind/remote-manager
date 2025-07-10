@@ -1,4 +1,4 @@
-package dev.themajorones.remotemanager.entities;
+package dev.themajorones.remotemanager.entity;
 
 import androidx.room.Entity;
 import lombok.AllArgsConstructor;
