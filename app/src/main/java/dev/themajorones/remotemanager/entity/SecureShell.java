@@ -8,8 +8,12 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.security.Security;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class SecureShell {
+
+    private final ExecutorService io = Executors.newSingleThreadExecutor();
 
     static {
         Security.removeProvider("BC");
@@ -30,11 +34,18 @@ public class SecureShell {
     }
 
     public void connect(String host, int port, String user, String password, String keyPath) throws IOException {
-        sshClient.connect(host, port);
-        if (keyPath != null) {
-            sshClient.authPublickey(user, keyPath);
-        } else {
-            sshClient.authPassword(user, password);
+        try {
+            io.submit(() -> {
+                sshClient.connect(host, port);
+                if (keyPath != null) {
+                    sshClient.authPublickey(user, keyPath);
+                } else {
+                    sshClient.authPassword(user, password);
+                }
+                return null;
+            }).get();
+        } catch (Exception e) {
+            throw new IOException("Failed to connect to SSH server", e);
         }
     }
 
@@ -42,17 +53,24 @@ public class SecureShell {
         connect(device.getHost(), 22, device.getUsername(), device.getPassword(), device.getKeyPath());
     }
 
-    public String runCommand(String command) throws IOException {
-        try (Session session = sshClient.startSession()) {
-            Session.Command cmd = session.exec(command);
-            BufferedReader reader = new BufferedReader(new InputStreamReader(cmd.getInputStream()));
-            StringBuilder sb = new StringBuilder();
-            String line;
-            while ((line = reader.readLine()) != null) {
-                sb.append(line).append("\n");
-            }
-            cmd.join();
-            return sb.toString();
+    public String runCommand(String command) {
+        try {
+            return io.submit(() -> {
+                try (Session session = sshClient.startSession()) {
+                    Session.Command cmd = session.exec(command);
+                    BufferedReader reader = new BufferedReader(new InputStreamReader(cmd.getInputStream()));
+                    StringBuilder sb = new StringBuilder();
+                    String line;
+                    while ((line = reader.readLine()) != null) {
+                        sb.append(line).append("\n");
+                    }
+                    cmd.join();
+                    return sb.toString();
+                }
+            }).get();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
         }
     }
 

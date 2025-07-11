@@ -13,7 +13,6 @@ import androidx.annotation.Nullable;
 import android.widget.ArrayAdapter;
 import dev.themajorones.remotemanager.R;
 import dev.themajorones.remotemanager.entity.Device;
-
 import java.util.List;
 
 public class DeviceItemAdapter extends ArrayAdapter<Device> {
@@ -26,7 +25,7 @@ public class DeviceItemAdapter extends ArrayAdapter<Device> {
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
         if (convertView == null) {
-            convertView = LayoutInflater.from(getContext()).inflate(R.layout.device_item_fragment, parent, false);
+            convertView = LayoutInflater.from(getContext()).inflate(R.layout.device_item, parent, false);
         }
 
         Device device = getItem(position);

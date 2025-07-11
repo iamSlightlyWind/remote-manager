@@ -27,6 +27,8 @@ public class Device {
 
     private String password;
 
+    private int port;
+
     private String keyPath;
 
     private String macAddress;

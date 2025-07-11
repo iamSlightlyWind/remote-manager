@@ -3,6 +3,7 @@ package dev.themajorones.remotemanager.service;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+
 import dev.themajorones.remotemanager.entity.Device;
 import dev.themajorones.remotemanager.entity.SecureShell;
 
@@ -22,6 +23,7 @@ public class SSHService {
                     return shell;
                 } else {
                     shell.connect(device);
+                    return shell;
                 }
             } else {
                 SecureShell shell = new SecureShell();
@@ -35,7 +37,18 @@ public class SSHService {
         return null;
     }
 
-    public Device sshFillInfo(String host, String username, String password){ // ssh into the device to get info (os,
+    public SecureShell getStandaloneConnection(Device device) {
+        try {
+            SecureShell shell = new SecureShell();
+            shell.connect(device);
+            return shell;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public Device sshFillInfo(String host, String username, String password) { // ssh into the device to get info (os,
         return null;
     }
 

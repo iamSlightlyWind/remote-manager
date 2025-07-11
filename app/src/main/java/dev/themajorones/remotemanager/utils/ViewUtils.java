@@ -10,7 +10,6 @@ import androidx.annotation.IdRes;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
-
 import java.util.List;
 
 public class ViewUtils {
