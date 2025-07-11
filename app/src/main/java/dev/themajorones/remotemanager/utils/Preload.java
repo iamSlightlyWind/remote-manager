@@ -3,12 +3,14 @@ package dev.themajorones.remotemanager.utils;
 import android.content.pm.ActivityInfo;
 import android.content.res.Resources;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.view.WindowCompat;
 
 public class Preload {
 
     public static void load(AppCompatActivity activity) {
         preventRotation(activity);
         enableSSHJDebugLogging();
+        preventOverDraw(activity);
     }
 
     private static void preventRotation(AppCompatActivity activity) {
@@ -22,5 +24,9 @@ public class Preload {
     private static void enableSSHJDebugLogging() {
         System.setProperty("org.slf4j.simpleLogger.defaultLogLevel", "trace");
         System.setProperty("org.slf4j.simpleLogger.log.net.schmizz.sshj", "debug");
+    }
+
+    private static void preventOverDraw(AppCompatActivity activity){
+        WindowCompat.setDecorFitsSystemWindows(activity.getWindow(), true);
     }
 }

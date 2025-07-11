@@ -16,9 +16,9 @@ import dev.themajorones.remotemanager.entity.Device;
 
 import java.util.List;
 
-public class DeviceItemFragment extends ArrayAdapter<Device> {
+public class DeviceItemAdapter extends ArrayAdapter<Device> {
 
-    public DeviceItemFragment(@NonNull Context context, @NonNull List<Device> devices) {
+    public DeviceItemAdapter(@NonNull Context context, @NonNull List<Device> devices) {
         super(context, 0, devices);
     }
 
