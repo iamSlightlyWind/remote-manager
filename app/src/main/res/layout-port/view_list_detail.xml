@@ -33,6 +33,8 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="10"
-        android:padding="8dp" />
+        android:padding="8dp"
+        android:divider="@android:color/transparent"
+        android:dividerHeight="12dp" />
 
 </LinearLayout>

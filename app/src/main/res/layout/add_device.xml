@@ -1,169 +1,197 @@
 <?xml version="1.0" encoding="utf-8"?>
-<GridLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.cardview.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context=".fragment.AddDeviceFragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:columnCount="2"
-    android:rowCount="7"
-    android:padding="16dp">
+    app:cardCornerRadius="12dp"
+    app:cardElevation="4dp"
+    app:cardUseCompatPadding="true">
 
-    <!-- Host -->
-    <TextView
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_row="0"
-        android:layout_column="0"
-        android:layout_columnWeight="@dimen/label_column_weight"
-        android:layout_rowWeight="1"
-        android:text="@string/host" />
+    <GridLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:columnCount="2"
+        android:rowCount="7"
+        android:padding="20dp"
+        android:useDefaultMargins="true"
+        tools:context=".fragment.AddDeviceFragment">
 
-    <EditText
-        android:id="@+id/host_input"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_row="0"
-        android:layout_column="1"
-        android:layout_columnWeight="@dimen/input_column_weight"
-        android:layout_rowWeight="1"
-        android:hint="@string/enter_host" />
-
-    <!-- Username -->
-    <TextView
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_row="1"
-        android:layout_column="0"
-        android:layout_columnWeight="@dimen/label_column_weight"
-        android:layout_rowWeight="1"
-        android:text="@string/username" />
-
-    <EditText
-        android:id="@+id/username_input"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_row="1"
-        android:layout_column="1"
-        android:layout_columnWeight="@dimen/input_column_weight"
-        android:layout_rowWeight="1"
-        android:hint="@string/enter_username" />
-
-    <!-- Password -->
-    <TextView
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_row="2"
-        android:layout_column="0"
-        android:layout_columnWeight="@dimen/label_column_weight"
-        android:layout_rowWeight="1"
-        android:text="@string/password" />
-
-    <EditText
-        android:id="@+id/password_input"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_row="2"
-        android:layout_column="1"
-        android:layout_columnWeight="@dimen/input_column_weight"
-        android:layout_rowWeight="1"
-        android:hint="@string/enter_password"
-        android:inputType="textPassword" />
-
-    <!-- Port -->
-    <TextView
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_row="3"
-        android:layout_column="0"
-        android:layout_columnWeight="@dimen/label_column_weight"
-        android:layout_rowWeight="1"
-        android:text="@string/port" />
-
-    <EditText
-        android:id="@+id/port_input"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_row="3"
-        android:layout_column="1"
-        android:layout_columnWeight="@dimen/input_column_weight"
-        android:layout_rowWeight="1"
-        android:hint="@string/enter_port"
-        android:inputType="number" />
-
-    <!-- OS -->
-    <TextView
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_row="4"
-        android:layout_column="0"
-        android:layout_columnWeight="@dimen/label_column_weight"
-        android:layout_rowWeight="1"
-        android:text="@string/os" />
-
-    <EditText
-        android:id="@+id/os_input"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_row="4"
-        android:layout_column="1"
-        android:layout_columnWeight="@dimen/input_column_weight"
-        android:layout_rowWeight="1"
-        android:hint="@string/enter_os" />
-
-    <!-- Mac Address -->
-    <TextView
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_row="5"
-        android:layout_column="0"
-        android:layout_columnWeight="@dimen/label_column_weight"
-        android:layout_rowWeight="1"
-        android:text="@string/mac_address" />
-
-    <EditText
-        android:id="@+id/mac_address_input"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_row="5"
-        android:layout_column="1"
-        android:layout_columnWeight="@dimen/input_column_weight"
-        android:layout_rowWeight="1"
-        android:hint="@string/enter_mac_address"
-        android:inputType="text" />
-
-    <!-- Buttons -->
-    <LinearLayout
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_row="6"
-        android:layout_column="1"
-        android:layout_columnWeight="@dimen/input_column_weight"
-        android:layout_rowWeight="1"
-        android:orientation="horizontal">
-
-        <Button
-            android:id="@+id/reset_button"
+        <!-- Host -->
+        <TextView
             android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:layout_margin="16dp"
-            android:text="@string/reset" />
+            android:layout_height="wrap_content"
+            android:layout_columnWeight="1"
+            android:text="@string/host"
+            style="?attr/textAppearanceBody1"/>
 
-        <Button
-            android:id="@+id/ssh_fill_button"
+        <com.google.android.material.textfield.TextInputLayout
             android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:layout_margin="16dp"
-            android:text="@string/ssh_fill" />
+            android:layout_height="wrap_content"
+            android:layout_columnWeight="3"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            app:boxCornerRadiusTopStart="8dp"
+            app:boxCornerRadiusTopEnd="8dp"
+            app:hintEnabled="true"
+            android:hint="@string/enter_host">
 
-        <Button
-            android:id="@+id/save_button"
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/host_input"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <!-- Username -->
+        <TextView
             android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:layout_margin="16dp"
-            android:text="@string/save" />
-    </LinearLayout>
+            android:layout_height="wrap_content"
+            android:layout_columnWeight="1"
+            android:text="@string/username"
+            style="?attr/textAppearanceBody1"/>
 
-</GridLayout>
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_columnWeight="3"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:hint="@string/enter_username">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/username_input"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <!-- Password -->
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_columnWeight="1"
+            android:text="@string/password"
+            style="?attr/textAppearanceBody1"/>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_columnWeight="3"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:hint="@string/enter_password">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/password_input"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textPassword"/>
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <!-- Port -->
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_columnWeight="1"
+            android:text="@string/port"
+            style="?attr/textAppearanceBody1"/>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_columnWeight="3"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:hint="@string/enter_port">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/port_input"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="number"/>
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <!-- OS -->
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_columnWeight="1"
+            android:text="@string/os"
+            style="?attr/textAppearanceBody1"/>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_columnWeight="3"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:hint="@string/enter_os">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/os_input"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <!-- MAC Address -->
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_columnWeight="1"
+            android:text="@string/mac_address"
+            style="?attr/textAppearanceBody1"/>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_columnWeight="3"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:hint="@string/enter_mac_address">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/mac_address_input"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="text"/>
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <!-- Buttons -->
+        <View
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_columnWeight="1"/><!-- empty cell -->
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_columnWeight="3"
+            android:orientation="horizontal"
+            android:gravity="center">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/reset_button"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/reset"
+                android:layout_marginHorizontal="8dp"
+                android:inset="8dp"/>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/ssh_fill_button"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/ssh_fill"
+                android:layout_marginHorizontal="8dp"
+                android:inset="8dp"/>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/save_button"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/save"
+                android:layout_marginHorizontal="8dp"
+                android:inset="8dp"/>
+        </LinearLayout>
+    </GridLayout>
+</androidx.cardview.widget.CardView>
