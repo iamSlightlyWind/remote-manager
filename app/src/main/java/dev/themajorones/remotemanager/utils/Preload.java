@@ -15,7 +15,7 @@ public class Preload {
 
     private static void preventRotation(AppCompatActivity activity) {
         Resources res = activity.getResources();
-        boolean isTablet = DeviceInfo.getDeviceType(res).equals("Tablet");
+        boolean isTablet = DeviceUtils.getDeviceType(res).equals("Tablet");
         if (!isTablet) {
             activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         }

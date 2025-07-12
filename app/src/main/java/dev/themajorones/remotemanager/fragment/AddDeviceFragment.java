@@ -4,16 +4,14 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
-
 import androidx.fragment.app.Fragment;
 import androidx.annotation.NonNull;
-
 import com.google.android.material.textfield.TextInputEditText;
-
 import dev.themajorones.remotemanager.R;
 import dev.themajorones.remotemanager.entity.Device;
 import dev.themajorones.remotemanager.entity.SecureShell;
 import dev.themajorones.remotemanager.service.SSHService;
+import dev.themajorones.remotemanager.utils.DeviceUtils;
 
 public class AddDeviceFragment extends Fragment {
 
@@ -58,7 +56,7 @@ public class AddDeviceFragment extends Fragment {
         Toast.makeText(getContext(), "Save", Toast.LENGTH_SHORT).show();
     }
 
-    private void onSshFillButtonClick() { // TODO: Implement SSH fill functionality
+    private void onSshFillButtonClick() {
         Device newDevice = new Device()
                 .setHost(hostInput.getText().toString())
                 .setUsername(usernameInput.getText().toString())
@@ -67,7 +65,8 @@ public class AddDeviceFragment extends Fragment {
 
         try {
             SecureShell standaloneShell = SSHService.get().getStandaloneConnection(newDevice);
-            macAddressInput.setText(standaloneShell.runCommand("uname -a"));
+            osInput.setText(DeviceUtils.getOSName(standaloneShell));
+            macAddressInput.setText(DeviceUtils.getMacAddress(standaloneShell, newDevice.getHost()));
         } catch (Exception e) {
             Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
         }

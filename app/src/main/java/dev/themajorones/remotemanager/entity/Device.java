@@ -17,6 +17,9 @@ import lombok.experimental.Accessors;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Device {
+
+    private String friendlyName;
+
     private List<OS> osList;
 
     private List<Device> managedDevices = new ArrayList<>();
@@ -48,5 +51,4 @@ public class Device {
         }
         return false;
     }
-
 }
