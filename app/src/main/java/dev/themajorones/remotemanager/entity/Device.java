@@ -1,54 +1,54 @@
 package dev.themajorones.remotemanager.entity;
 
 import androidx.room.Entity;
-
-import java.util.ArrayList;
-import java.util.List;
+import androidx.room.PrimaryKey;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import androidx.annotation.NonNull;
 import lombok.Setter;
-import lombok.experimental.Accessors;
 
 @Entity(tableName = "Device")
 @Getter
 @Setter
-@Accessors(chain = true)
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class Device {
 
-    private String friendlyName;
+    @PrimaryKey
+    @NonNull
+    public String name;
 
-    private List<OS> osList;
+    public String os;
 
-    private List<Device> managedDevices = new ArrayList<>();
+    public Long managerId;
 
-    private String host;
+    public String host;
 
-    private String username;
+    public String username;
 
-    private String password;
+    public String password;
 
-    private int port;
+    public int port;
 
-    private String keyPath;
+    public String keyPath;
 
-    private String macAddress;
+    public String macAddress;
 
-    public Device addManagedDevice(Device device) {
-        if (device != null && !isManaged(device)) {
-            managedDevices.add(device);
-        }
-        return this;
-    }
-
-    public boolean isManaged(Device device) {
-        for (Device managedDevice : managedDevices) {
-            if (managedDevice.getHost().equals(device.getHost())) {
-                return true;
-            }
-        }
-        return false;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Device device = (Device) o;
+        return port == device.port &&
+                java.util.Objects.equals(name, device.name) &&
+                java.util.Objects.equals(os, device.os) &&
+                java.util.Objects.equals(host, device.host) &&
+                java.util.Objects.equals(username, device.username) &&
+                java.util.Objects.equals(password, device.password) &&
+                java.util.Objects.equals(keyPath, device.keyPath) &&
+                java.util.Objects.equals(macAddress, device.macAddress);
     }
 }

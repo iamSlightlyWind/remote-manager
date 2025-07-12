@@ -6,6 +6,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.ListAdapter;
+import android.widget.Toast;
 import androidx.annotation.IdRes;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -17,8 +18,7 @@ public class ViewUtils {
         ArrayAdapter<T> adapter = new ArrayAdapter<>(
                 context,
                 android.R.layout.simple_list_item_1,
-                items
-        );
+                items);
         listView.setAdapter(adapter);
     }
 
@@ -29,6 +29,10 @@ public class ViewUtils {
     public static void replaceElement(ViewGroup container, int layoutResId) {
         container.removeAllViews();
         LayoutInflater.from(container.getContext()).inflate(layoutResId, container, true);
+    }
+
+    public static void Notify(Context context, String message) {
+        Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
     }
 
     public static void replaceFragment(@NonNull FragmentActivity host, @IdRes int containerId, @NonNull Fragment frag) {

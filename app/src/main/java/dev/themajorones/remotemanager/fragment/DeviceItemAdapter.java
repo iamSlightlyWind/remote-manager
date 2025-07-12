@@ -7,12 +7,13 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import android.widget.ArrayAdapter;
 import dev.themajorones.remotemanager.R;
 import dev.themajorones.remotemanager.entity.Device;
+import dev.themajorones.remotemanager.utils.ViewUtils;
+
 import java.util.List;
 
 public class DeviceItemAdapter extends ArrayAdapter<Device> {
@@ -36,9 +37,9 @@ public class DeviceItemAdapter extends ArrayAdapter<Device> {
             Button actionButton = convertView.findViewById(R.id.actionButton);
             Button editButton = convertView.findViewById(R.id.editButton);
 
-            deviceInfoTextView.setText(device.getHost());
-            actionButton.setOnClickListener(v -> Toast.makeText(getContext(), "Action for " + device.getHost(), Toast.LENGTH_SHORT).show());
-            editButton.setOnClickListener(v -> Toast.makeText(getContext(), "Edit for " + device.getHost(), Toast.LENGTH_SHORT).show());
+            deviceInfoTextView.setText(device.getName());
+            actionButton.setOnClickListener(v -> ViewUtils.Notify(getContext(), "Action for " + device.getName()));
+            editButton.setOnClickListener(v -> ViewUtils.Notify(getContext(), "Edit for " + device.getName()));
         }
 
         return convertView;

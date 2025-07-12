@@ -31,7 +31,7 @@ public class WakeOnLanUtils {
     }
 
     private static byte[] buildMagicPacket(String mac) {
-        String[] hex = mac.split("(:|-)");
+        String[] hex = mac.split("([:\\-])");
         if (hex.length != 6) {
             throw new IllegalArgumentException("Invalid MAC format");
         }

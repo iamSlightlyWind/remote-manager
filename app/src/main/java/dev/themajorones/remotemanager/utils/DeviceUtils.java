@@ -2,6 +2,7 @@ package dev.themajorones.remotemanager.utils;
 
 import android.content.res.Resources;
 import androidx.window.layout.FoldingFeature;
+import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import dev.themajorones.remotemanager.entity.SecureShell;
@@ -61,7 +62,7 @@ public class DeviceUtils {
             Matcher inetMatcher = inetPattern.matcher(line);
             if (inetMatcher.find()) {
                 String ip = inetMatcher.group(1);
-                if (ip.equals(interfaceAddress)) {
+                if (Objects.requireNonNull(ip).equals(interfaceAddress)) {
                     return currentMac;
                 }
             }
@@ -86,7 +87,7 @@ public class DeviceUtils {
             Matcher inetMatcher = inetPattern.matcher(line);
             if (inetMatcher.find()) {
                 String ip = inetMatcher.group(1);
-                if (ip.equals(interfaceAddress)) {
+                if (Objects.requireNonNull(ip).equals(interfaceAddress)) {
                     return currentMac;
                 }
             }

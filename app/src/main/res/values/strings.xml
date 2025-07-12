@@ -23,4 +23,6 @@
     <string name="ssh_fill">SSH &amp; Fill</string>
     <string name="save">Save</string>
     <string name="add_device">Add Device</string>
+    <string name="name">Name</string>
+    <string name="enter_name">Enter Device Name</string>
 </resources>
