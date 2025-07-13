@@ -6,6 +6,9 @@ import android.content.pm.ActivityInfo;
 import android.content.res.Resources;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.WindowCompat;
+
+import com.google.android.material.color.DynamicColors;
+
 import dev.themajorones.remotemanager.service.PersistentStorageService;
 import dev.themajorones.remotemanager.service.development.DataLoader;
 import lombok.Getter;
@@ -24,6 +27,13 @@ public class Preload {
         preventRotation(activity);
         enableSSHJDebugLogging();
         preventOverDraw(activity);
+        useMaterialYou(activity);
+    }
+
+    private static void useMaterialYou(AppCompatActivity activity) {
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S) {
+            DynamicColors.applyToActivitiesIfAvailable(activity.getApplication());
+        }
     }
 
     @SuppressLint("SourceLockedOrientationActivity")
