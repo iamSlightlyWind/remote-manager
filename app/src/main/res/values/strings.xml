@@ -31,4 +31,12 @@
     <string name="menu_button1">Device Manager</string>
     <string name="menu_button2">Device Hierarchy</string>
     <string name="menu_settings">Settings</string>
+    <string name="item_managing_device_default_name">Managing Device Name</string>
+    <string name="button_add_managed_device">Add Managed Device</string>
+    <string name="desc_expand_collapse">Expand/Collapse</string>
+    <string name="item_managed_device_default_name">Managed Device Name</string>
+    <string name="desc_managed_device_icon">Managed Device Icon</string>
+    <string name="button_boot">Boot</string>
+    <string name="button_shutdown">Shutdown</string>
+    <string name="button_remove">Remove</string>
 </resources>

@@ -19,7 +19,28 @@
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:layout_marginStart="12dp"
+        android:layout_gravity="center_vertical"
         android:text="Managed Device Name"
         android:textSize="16sp" />
+
+    <Button
+        android:id="@+id/btnBoot"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Boot"
+        android:layout_marginEnd="4dp" />
+
+    <Button
+        android:id="@+id/btnShutdown"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Shutdown"
+        android:layout_marginEnd="4dp" />
+
+    <Button
+        android:id="@+id/btnRemove"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Remove" />
 
 </LinearLayout>

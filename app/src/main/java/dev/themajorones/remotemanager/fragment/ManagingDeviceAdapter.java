@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import dev.themajorones.remotemanager.entity.Device;
 import dev.themajorones.remotemanager.service.PersistentStorageService;
 import android.widget.ImageView;
@@ -13,6 +14,7 @@ import android.widget.ListAdapter;
 import android.widget.TextView;
 import java.util.List;
 import dev.themajorones.remotemanager.R;
+import dev.themajorones.remotemanager.utils.ViewUtils;
 
 public class ManagingDeviceAdapter extends ArrayAdapter<Device> {
     private final LayoutInflater inflater;
@@ -30,6 +32,7 @@ public class ManagingDeviceAdapter extends ArrayAdapter<Device> {
             holder = new ViewHolder();
             holder.manageingDevice = convertView.findViewById(R.id.managing_device_name);
             holder.expander = convertView.findViewById(R.id.expand_collapse);
+            holder.addManagedDevice = convertView.findViewById(R.id.add_managed_device);
             holder.lvManaged = convertView.findViewById(R.id.lvManagedDevices);
             convertView.setTag(holder);
         } else {
@@ -40,7 +43,7 @@ public class ManagingDeviceAdapter extends ArrayAdapter<Device> {
         holder.manageingDevice.setText(device.getName());
 
         List<Device> managedDevices = PersistentStorageService.findManagedDevices(device);
-        ManagedDeviceAdapter managedAdapter = new ManagedDeviceAdapter(getContext(), managedDevices);
+        ManagedDeviceAdapter managedAdapter = new ManagedDeviceAdapter(getContext(), device, managedDevices);
         holder.lvManaged.setAdapter(managedAdapter);
         setListViewHeightBasedOnChildren(holder.lvManaged);
 
@@ -62,6 +65,7 @@ public class ManagingDeviceAdapter extends ArrayAdapter<Device> {
 
         holder.expander.setOnClickListener(toggleListener);
         holder.manageingDevice.setOnClickListener(toggleListener);
+        holder.addManagedDevice.setOnClickListener(v -> {ViewUtils.notify("Add Managed Device pressed for " + device.getName());});
 
         return convertView;
     }
@@ -70,6 +74,7 @@ public class ManagingDeviceAdapter extends ArrayAdapter<Device> {
         TextView manageingDevice;
         ImageView expander;
         ListView lvManaged;
+        Button addManagedDevice;
     }
 
     private static void setListViewHeightBasedOnChildren(ListView listView) {
