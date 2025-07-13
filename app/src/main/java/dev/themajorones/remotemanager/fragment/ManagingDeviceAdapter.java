@@ -17,18 +17,32 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
 import dev.themajorones.remotemanager.R;
 import dev.themajorones.remotemanager.utils.ViewUtils;
+import android.os.Handler;
+import android.os.Looper;
 
 public class ManagingDeviceAdapter extends ArrayAdapter<Device> {
     private final LayoutInflater inflater;
+    private List<Device> savedDevices = new ArrayList<>();
+    private Device thisDevice;
+    private final Handler handler = new Handler(Looper.getMainLooper());
+    private final Runnable updateChecker = new Runnable() {
+        @Override
+        public void run() {
+            checkForUpdates();
+            handler.postDelayed(this, 250);
+        }
+    };
 
     public ManagingDeviceAdapter(Context context, List<Device> devices) {
         super(context, 0, devices);
         inflater = LayoutInflater.from(context);
+        startPeriodicCheck();
     }
 
     @NonNull
@@ -48,11 +62,13 @@ public class ManagingDeviceAdapter extends ArrayAdapter<Device> {
         }
 
         Device device = getItem(position);
+        thisDevice = device;
         holder.manageingDevice.setText(Objects.requireNonNull(device).getName());
 
         List<Device> managedDevices = PersistentStorageService.findManagedDevices(device);
         ManagedDeviceAdapter managedAdapter = new ManagedDeviceAdapter(getContext(), device, managedDevices);
         holder.lvManaged.setAdapter(managedAdapter);
+        holder.savedManagedDevices = new ArrayList<>(managedDevices);
         setListViewHeightBasedOnChildren(holder.lvManaged);
 
         boolean expanded = PersistentStorageService.isManagingDevice(device);
@@ -83,6 +99,30 @@ public class ManagingDeviceAdapter extends ArrayAdapter<Device> {
         ImageView expander;
         ListView lvManaged;
         Button addManagedDevice;
+        List<Device> savedManagedDevices = new ArrayList<>();
+    }
+
+    private void startPeriodicCheck() {
+        handler.post(updateChecker);
+    }
+
+    public void stopPeriodicCheck() {
+        handler.removeCallbacks(updateChecker);
+    }
+
+    private void checkForUpdates() {
+        for (int i = 0; i < getCount(); i++) {
+            Device device = getItem(i);
+            if (device != null) {
+                List<Device> currentManagedDevices = PersistentStorageService.findManagedDevices(device);
+
+                updateDeviceAtPosition(i, currentManagedDevices);
+            }
+        }
+    }
+
+    private void updateDeviceAtPosition(int position, List<Device> newManagedDevices) {
+        notifyDataSetChanged();
     }
 
     private static void setListViewHeightBasedOnChildren(ListView listView) {

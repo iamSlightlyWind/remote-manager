@@ -58,7 +58,8 @@ public class Device {
                 java.util.Objects.equals(username, device.username) &&
                 java.util.Objects.equals(password, device.password) &&
                 java.util.Objects.equals(keyPath, device.keyPath) &&
-                java.util.Objects.equals(macAddress, device.macAddress);
+                java.util.Objects.equals(macAddress, device.macAddress) &&
+                java.util.Objects.equals(managingDevices, device.managingDevices);
     }
 
     public boolean isSshAble() {

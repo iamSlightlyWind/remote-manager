@@ -14,7 +14,7 @@ import androidx.annotation.NonNull;
 import java.util.List;
 import java.util.Objects;
 
-import dev.themajorones.remotemanager.utils.DeviceUtils;
+import dev.themajorones.remotemanager.service.PersistentStorageService;
 import dev.themajorones.remotemanager.utils.ViewUtils;
 import dev.themajorones.remotemanager.R;
 import dev.themajorones.remotemanager.entity.Device;
@@ -50,8 +50,11 @@ public class ManagedDeviceAdapter extends ArrayAdapter<Device> {
         String childName = device.getName();
         String parentName = parentDevice.getName();
         holder.btnBoot.setOnClickListener(v -> ViewUtils.notify("Boot pressed for " + childName + " managed by " + parentName));
-        holder.btnShutdown.setOnClickListener(v -> DeviceUtils.shutdownNestedDevice(parentDevice, device));
-        holder.btnRemove.setOnClickListener(v -> ViewUtils.notify("Remove pressed for " + childName + " managed by " + parentName));
+        holder.btnShutdown.setOnClickListener(v -> ViewUtils.notify("Shutdown pressed for " + childName + " managed by " + parentName));
+        holder.btnRemove.setOnClickListener(v -> {
+            device.removesManagingDevice(parentDevice);
+            PersistentStorageService.get().save(device);
+        });
         return convertView;
     }
 

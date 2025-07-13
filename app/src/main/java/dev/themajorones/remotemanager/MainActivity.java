@@ -89,11 +89,12 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void run() {
             fillManagingDeviceList();
-            handler.postDelayed(this, 1000);
+            handler.postDelayed(this, 250);
         }
     };
 
     private void onPressDeviceHierarchyButton() {
+        handler.removeCallbacks(deviceListUpdater);   // stop device list updates
         currentManagingDevices = new ArrayList<>();
         ViewUtils.replaceElement(findViewById(R.id.mainContent), R.layout.device_hierarchy);
         handler.post(managingDeviceListUpdater);
@@ -105,6 +106,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void onPressDeviceManagerButton() {
+        handler.removeCallbacks(managingDeviceListUpdater);  // stop managing list updates
         currentDevices = new ArrayList<>();
         ViewUtils.replaceElement(findViewById(R.id.mainContent), R.layout.device_manager);
         handler.post(deviceListUpdater);
@@ -115,7 +117,7 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void run() {
             fillDeviceList();
-            handler.postDelayed(this, 1000);
+            handler.postDelayed(this, 250);
         }
     };
 
