@@ -47,6 +47,7 @@ public class DeviceItemAdapter extends ArrayAdapter<Device> {
                 case "linux" -> logoImageView.setImageResource(R.drawable.linux);
                 case "windows" -> logoImageView.setImageResource(R.drawable.windows);
                 case "macos" -> logoImageView.setImageResource(R.drawable.macos);
+                default -> logoImageView.setImageResource(R.drawable.windows);
             }
             
             deviceInfoTextView.setText(device.getName());

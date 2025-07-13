@@ -16,6 +16,7 @@ import dev.themajorones.remotemanager.fragment.AddDeviceFragment;
 import dev.themajorones.remotemanager.entity.Device;
 import dev.themajorones.remotemanager.fragment.DeviceItemAdapter;
 import dev.themajorones.remotemanager.service.PersistentStorageService;
+import dev.themajorones.remotemanager.service.development.DataLoader;
 import dev.themajorones.remotemanager.utils.Preload;
 import dev.themajorones.remotemanager.utils.ViewUtils;
 import lombok.Getter;
@@ -43,6 +44,7 @@ public class MainActivity extends AppCompatActivity {
     private void setupButtonTriggers(Bundle savedInstanceState) {
         Button addDeviceButton = findViewById(R.id.addDeviceButton);
         addDeviceButton.setOnClickListener(v -> spawnAddDeviceFragment());
+        addDeviceButton.setOnLongClickListener( v -> DataLoader.loadData());
     }
 
     public void spawnAddDeviceFragment() {

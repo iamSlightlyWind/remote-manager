@@ -29,12 +29,13 @@ public class AddDeviceFragment extends Fragment {
     TextInputEditText osInput;
     TextInputEditText macAddressInput;
 
+    private Device savedDevice;
+    private View savedView;
+    private static AddDeviceFragment savedInstance;
+
     public AddDeviceFragment() {
         super(R.layout.add_device);
     }
-
-    private View savedView;
-    private static AddDeviceFragment savedInstance;
 
     public static AddDeviceFragment getInstance() {
         return savedInstance;
@@ -57,6 +58,8 @@ public class AddDeviceFragment extends Fragment {
     }
 
     public void editDevice(Device device) {
+        savedDevice = null;
+        savedDevice = device;
         nameInput.setText(device.getName());
         hostInput.setText(device.getHost());
         usernameInput.setText(device.getUsername());
@@ -86,23 +89,57 @@ public class AddDeviceFragment extends Fragment {
     private void onDeleteButtonClick() {
         String deviceName = Objects.requireNonNull(nameInput.getText()).toString();
         Device device = PersistentStorageService.get().findByName(deviceName);
+
         if (device != null) {
             PersistentStorageService.get().delete(device);
             ViewUtils.notify("Device deleted successfully");
             onResetButtonClick();
         } else {
-            ViewUtils.notify("Device not found");
+            PersistentStorageService.get().delete(savedDevice);
         }
+
+        onResetButtonClick();
     }
 
     private void onSaveButtonClick() {
-        String name = Objects.requireNonNull(nameInput.getText()).toString();
-        String host = Objects.requireNonNull(hostInput.getText()).toString();
-        String username = Objects.requireNonNull(usernameInput.getText()).toString();
-        String password = Objects.requireNonNull(passwordInput.getText()).toString();
-        int port = Integer.parseInt(Objects.requireNonNull(portInput.getText()).toString());
-        String os = Objects.requireNonNull(osInput.getText()).toString();
-        String macAddress = Objects.requireNonNull(macAddressInput.getText()).toString();
+        String name, host, username, password, os, macAddress;
+        int port;
+
+        try {
+            name = Objects.requireNonNull(nameInput.getText()).toString();
+
+            if (name.isEmpty()) {
+                ViewUtils.notify("Name cannot be empty");
+                return;
+            }
+
+            if (savedDevice == null) {
+                Device existingDevice = PersistentStorageService.get().findByName(name);
+                if (existingDevice != null) {
+                    ViewUtils.notify("Device with this name already exists");
+                    return;
+                }
+            }
+
+            host = Objects.requireNonNull(hostInput.getText()).toString();
+            username = Objects.requireNonNull(usernameInput.getText()).toString();
+            password = Objects.requireNonNull(passwordInput.getText()).toString();
+            port = Integer.parseInt(Objects.requireNonNull(portInput.getText()).toString());
+            os = Objects.requireNonNull(osInput.getText()).toString();
+
+            if (os.isEmpty()) {
+                ViewUtils.notify("OS cannot be empty");
+                return;
+            }
+
+            macAddress = Objects.requireNonNull(macAddressInput.getText()).toString();
+        } catch (NumberFormatException e) {
+            ViewUtils.notify("Port must be a number");
+            return;
+        } catch (Exception e) {
+            ViewUtils.throwNotify("Failed: ", e);
+            return;
+        }
 
         Device newDevice = Device.builder()
                 .name(name)
@@ -114,12 +151,21 @@ public class AddDeviceFragment extends Fragment {
                 .macAddress(macAddress)
                 .build();
 
-        Device savedDevice = PersistentStorageService.get().save(newDevice);
         if (savedDevice != null) {
+            if (!newDevice.getName().equals(savedDevice.getName())) {
+                PersistentStorageService.get().delete(savedDevice);
+            }
+        }
+
+        newDevice = PersistentStorageService.get().save(newDevice);
+
+        if (newDevice != null) {
             ViewUtils.notify("Device saved successfully");
         } else {
             ViewUtils.notify("Failed to save device");
         }
+
+        onResetButtonClick();
     }
 
     private void onSshFillButtonClick() {
@@ -150,5 +196,8 @@ public class AddDeviceFragment extends Fragment {
         portInput.setText("");
         osInput.setText("");
         macAddressInput.setText("");
+        savedDevice = null;
+        Button deleteButton = savedView.findViewById(R.id.delete_button);
+        deleteButton.setVisibility(View.GONE);
     }
 }

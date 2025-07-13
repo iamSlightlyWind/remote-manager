@@ -23,7 +23,6 @@ public class Preload {
         context = activity.getApplicationContext();
 
         PersistentStorageService.init(activity);
-        DataLoader.loadData();
         preventRotation(activity);
         enableSSHJDebugLogging();
         preventOverDraw(activity);
