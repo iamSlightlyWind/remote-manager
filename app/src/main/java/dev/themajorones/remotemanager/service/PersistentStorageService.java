@@ -10,6 +10,8 @@ import androidx.room.Update;
 import androidx.room.Delete;
 import androidx.room.Query;
 import androidx.room.OnConflictStrategy;
+
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -52,7 +54,7 @@ public class PersistentStorageService {
         void deleteAll();
     }
 
-    @Database(entities = {Device.class}, version = 2, exportSchema = false)
+    @Database(entities = {Device.class}, version = 3, exportSchema = false)
     abstract static class AppDatabase extends RoomDatabase {
         abstract DeviceDao deviceDao();
 
@@ -99,6 +101,40 @@ public class PersistentStorageService {
         if (INSTANCE == null)
             throw new IllegalStateException("PersistentStorageService not initialized. Call init(context) first.");
         return INSTANCE;
+    }
+
+    public static List<Device> findAllManagingDevices() {
+        List<Device> devices = get().findAll();
+        List<Device> managingDevices = new ArrayList<>();
+        for (Device device : devices) {
+            if (device.managingDevices == null || device.managingDevices.isEmpty()) {
+                continue;
+            }
+
+            for (Device managingDevice : device.managingDevices) {
+                if (!managingDevices.contains(managingDevice)) {
+                    managingDevices.add(managingDevice);
+                }
+            }
+        }
+
+        return managingDevices;
+    }
+
+    public static boolean isManagingDevice(Device device) {
+        List<Device> managingDevices = findAllManagingDevices();
+        return managingDevices.contains(device);
+    }
+
+    public static List<Device> findManagedDevices(Device device) {
+        List<Device> devices = get().findAll();
+        List<Device> managedDevices = new ArrayList<>();
+        for (Device d : devices) {
+            if (d.managingDevices != null && d.managingDevices.contains(device)) {
+                managedDevices.add(d);
+            }
+        }
+        return managedDevices;
     }
 
     public Device save(Device device) {

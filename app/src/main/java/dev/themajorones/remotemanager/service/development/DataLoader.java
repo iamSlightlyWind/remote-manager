@@ -37,7 +37,15 @@ public class DataLoader {
                 .os("macOS")
                 .build();
 
-        Device windowsPC = Device.builder()
+        Device asusRouter = Device.builder()
+                .name("ASUS Router")
+                .host("192.168.50.1")
+                .username("slightlywind")
+                .port(22)
+                .os("Linux")
+                .build();
+
+        Device gamingPC = Device.builder()
                 .name("Gaming PC [DD]")
                 .os("Windows")
                 .build();
@@ -47,23 +55,24 @@ public class DataLoader {
                 .os("macOS")
                 .build();
 
-        Device macPro = Device.builder()
-                .name("Mac Pro [DD]")
+        Device ddManager = Device.builder()
+                .name("DD Manager [DD]")
                 .os("macOS")
                 .build();
 
-        Device gamingLaptop = Device.builder()
-                .name("Gaming Laptop [DD]")
-                .os("Windows")
-                .build();
+        bigscreen.addManagingDevice(asusRouter);
+        windstation.addManagingDevice(asusRouter);
+
+        gamingPC.addManagingDevice(ddManager);
+        macbook.addManagingDevice(ddManager);
 
         devices.add(bigscreen);
         devices.add(windstation);
         devices.add(macVM);
-        devices.add(windowsPC);
+        devices.add(asusRouter);
+        devices.add(gamingPC);
         devices.add(macbook);
-        devices.add(macPro);
-        devices.add(gamingLaptop);
+        devices.add(ddManager);
 
         ViewUtils.notify("DEBUG: Deleted all devices and added dummy devices");
 

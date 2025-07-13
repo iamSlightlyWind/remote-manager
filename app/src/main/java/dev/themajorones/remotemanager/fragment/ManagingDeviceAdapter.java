@@ -5,16 +5,19 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import dev.themajorones.remotemanager.entity.Device;
+import dev.themajorones.remotemanager.service.PersistentStorageService;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.ListAdapter;
 import android.widget.TextView;
 import java.util.List;
 import dev.themajorones.remotemanager.R;
 
-public class ManagingDeviceAdapter extends ArrayAdapter<ManagingDeviceAdapter.ManagingDevice> {
+public class ManagingDeviceAdapter extends ArrayAdapter<Device> {
     private final LayoutInflater inflater;
 
-    public ManagingDeviceAdapter(Context context, List<ManagingDevice> devices) {
+    public ManagingDeviceAdapter(Context context, List<Device> devices) {
         super(context, 0, devices);
         inflater = LayoutInflater.from(context);
     }
@@ -25,40 +28,61 @@ public class ManagingDeviceAdapter extends ArrayAdapter<ManagingDeviceAdapter.Ma
         if (convertView == null) {
             convertView = inflater.inflate(R.layout.item_managing_device, parent, false);
             holder = new ViewHolder();
-            holder.tvName = convertView.findViewById(R.id.tvManagingDeviceName);
-            holder.ivExpand = convertView.findViewById(R.id.ivExpandCollapse);
+            holder.manageingDevice = convertView.findViewById(R.id.managing_device_name);
+            holder.expander = convertView.findViewById(R.id.expand_collapse);
             holder.lvManaged = convertView.findViewById(R.id.lvManagedDevices);
             convertView.setTag(holder);
         } else {
             holder = (ViewHolder) convertView.getTag();
         }
 
-        ManagingDevice device = getItem(position);
-        holder.tvName.setText(device.name);
-        ManagedDeviceAdapter managedAdapter = new ManagedDeviceAdapter(getContext(), device.managedDevices);
+        Device device = getItem(position);
+        holder.manageingDevice.setText(device.getName());
+
+        List<Device> managedDevices = PersistentStorageService.findManagedDevices(device);
+        ManagedDeviceAdapter managedAdapter = new ManagedDeviceAdapter(getContext(), managedDevices);
         holder.lvManaged.setAdapter(managedAdapter);
-        holder.lvManaged.setVisibility(device.expanded ? View.VISIBLE : View.GONE);
-        holder.ivExpand.setImageResource(device.expanded ? android.R.drawable.arrow_up_float : android.R.drawable.arrow_down_float);
-        holder.ivExpand.setOnClickListener(v -> {
-            device.expanded = !device.expanded;
-            notifyDataSetChanged();
-        });
+        setListViewHeightBasedOnChildren(holder.lvManaged);
+
+        boolean expanded = PersistentStorageService.isManagingDevice(device);
+        holder.lvManaged.setVisibility(expanded ? View.VISIBLE : View.GONE);
+        holder.expander.setImageResource(expanded
+                ? android.R.drawable.arrow_up_float
+                : android.R.drawable.arrow_down_float);
+
+        View.OnClickListener toggleListener = v -> {
+            if (holder.lvManaged.getVisibility() == View.VISIBLE) {
+                holder.lvManaged.setVisibility(View.GONE);
+                holder.expander.setImageResource(android.R.drawable.arrow_down_float);
+            } else {
+                holder.lvManaged.setVisibility(View.VISIBLE);
+                holder.expander.setImageResource(android.R.drawable.arrow_up_float);
+            }
+        };
+
+        holder.expander.setOnClickListener(toggleListener);
+        holder.manageingDevice.setOnClickListener(toggleListener);
+
         return convertView;
     }
 
     static class ViewHolder {
-        TextView tvName;
-        ImageView ivExpand;
+        TextView manageingDevice;
+        ImageView expander;
         ListView lvManaged;
     }
 
-    public static class ManagingDevice {
-        public String name;
-        public List<ManagedDeviceAdapter.ManagedDevice> managedDevices;
-        public boolean expanded = false;
-        public ManagingDevice(String name, List<ManagedDeviceAdapter.ManagedDevice> managedDevices) {
-            this.name = name;
-            this.managedDevices = managedDevices;
+    private static void setListViewHeightBasedOnChildren(ListView listView) {
+        ListAdapter adapter = listView.getAdapter();
+        if (adapter == null) return;
+        int totalHeight = 0;
+        for (int i = 0; i < adapter.getCount(); i++) {
+            View listItem = adapter.getView(i, null, listView);
+            listItem.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
+            totalHeight += listItem.getMeasuredHeight();
         }
+        ViewGroup.LayoutParams params = listView.getLayoutParams();
+        params.height = totalHeight + (listView.getDividerHeight() * (adapter.getCount() - 1));
+        listView.setLayoutParams(params);
     }
 }

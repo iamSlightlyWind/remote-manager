@@ -4,7 +4,6 @@ import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import android.util.Log;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -16,6 +15,7 @@ import java.util.List;
 import dev.themajorones.remotemanager.fragment.AddDeviceFragment;
 import dev.themajorones.remotemanager.entity.Device;
 import dev.themajorones.remotemanager.fragment.DeviceItemAdapter;
+import dev.themajorones.remotemanager.fragment.ManagingDeviceAdapter;
 import dev.themajorones.remotemanager.service.PersistentStorageService;
 import dev.themajorones.remotemanager.service.development.DataLoader;
 import dev.themajorones.remotemanager.utils.Preload;
@@ -28,6 +28,7 @@ public class MainActivity extends AppCompatActivity {
     private TextView deviceInfoTextView;
     private FoldingFeature foldingFeature;
     private List<Device> currentDevices = new ArrayList<>();
+    private List<Device> currentManagingDevices = new ArrayList<>();
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -42,10 +43,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setupButtonTriggers(Bundle savedInstanceState) {
-        Button addDeviceButton = findViewById(R.id.addDeviceButton);
-        addDeviceButton.setOnClickListener(v -> spawnAddDeviceFragment());
-        addDeviceButton.setOnLongClickListener( v -> DataLoader.loadData());
-
         Button deviceManagerButton = findViewById(R.id.button1);
         if (deviceManagerButton instanceof VerticalMaterialButton) {
             VerticalMaterialButton vButton1 = (VerticalMaterialButton) deviceManagerButton;
@@ -61,7 +58,7 @@ public class MainActivity extends AppCompatActivity {
         } else if (deviceHierarchyButton != null) {
             deviceHierarchyButton.setOnClickListener(v -> onPressDeviceHierarchyButton());
         }
-        
+
         Button settingsButton = findViewById(R.id.settingsButton);
         if (settingsButton instanceof VerticalMaterialButton) {
             VerticalMaterialButton vSettingsButton = (VerticalMaterialButton) settingsButton;
@@ -71,15 +68,47 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void fillDeviceList() {
-        ListView listView = findViewById(R.id.listView);
-        List<Device> devices = PersistentStorageService.get().findAll();
+    private void setupDeviceManagerButtonTriggers(Bundle savedInstanceState) {
+        Button addDeviceButton = findViewById(R.id.addDeviceButton);
+        addDeviceButton.setOnClickListener(v -> spawnAddDeviceFragment());
+        addDeviceButton.setOnLongClickListener(v -> DataLoader.loadData());
+    }
 
-        if (!devices.equals(currentDevices)) {
-            currentDevices = devices;
-            DeviceItemAdapter adapter = new DeviceItemAdapter(this, currentDevices);
+    private void fillManagingDeviceList() {
+        List<Device> managingDevices = PersistentStorageService.get().findAllManagingDevices();
+        ListView listView = findViewById(R.id.listView);
+
+        if (!managingDevices.equals(currentManagingDevices)) {
+            currentManagingDevices = managingDevices;
+            ManagingDeviceAdapter adapter = new ManagingDeviceAdapter(this, currentManagingDevices);
             ViewUtils.fillListView(listView, adapter);
         }
+    }
+
+    private final Runnable managingDeviceListUpdater = new Runnable() {
+        @Override
+        public void run() {
+            fillManagingDeviceList();
+            handler.postDelayed(this, 1000);
+        }
+    };
+
+    private void onPressDeviceHierarchyButton() {
+        currentManagingDevices = new ArrayList<>();
+        ViewUtils.replaceElement(findViewById(R.id.mainContent), R.layout.device_hierarchy);
+        handler.post(managingDeviceListUpdater);
+        // TODO: setup button triggers if any
+    }
+
+    public void spawnAddDeviceFragment() {
+        ViewUtils.replaceFragment(this, R.id.detailPane, new AddDeviceFragment());
+    }
+
+    private void onPressDeviceManagerButton() {
+        currentDevices = new ArrayList<>();
+        ViewUtils.replaceElement(findViewById(R.id.mainContent), R.layout.device_manager);
+        handler.post(deviceListUpdater);
+        setupDeviceManagerButtonTriggers(this.getIntent().getExtras());
     }
 
     private final Runnable deviceListUpdater = new Runnable() {
@@ -90,17 +119,14 @@ public class MainActivity extends AppCompatActivity {
         }
     };
 
-    private void onPressDeviceManagerButton() {
-        currentDevices = new ArrayList<>();
-        ViewUtils.replaceElement(findViewById(R.id.mainContent), R.layout.device_manager);
-        handler.post(deviceListUpdater);
-    }
+    private void fillDeviceList() {
+        ListView listView = findViewById(R.id.listView);
+        List<Device> devices = PersistentStorageService.get().findAll();
 
-    private void onPressDeviceHierarchyButton() {
-        ViewUtils.replaceElement(findViewById(R.id.mainContent), R.layout.device_hierarchy);
-    }
-
-    public void spawnAddDeviceFragment() {
-        ViewUtils.replaceFragment(this, R.id.detailPane, new AddDeviceFragment());
+        if (!devices.equals(currentDevices)) {
+            currentDevices = devices;
+            DeviceItemAdapter adapter = new DeviceItemAdapter(this, currentDevices);
+            ViewUtils.fillListView(listView, adapter);
+        }
     }
 }

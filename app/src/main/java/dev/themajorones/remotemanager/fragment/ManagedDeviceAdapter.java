@@ -9,11 +9,12 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import java.util.List;
 import dev.themajorones.remotemanager.R;
+import dev.themajorones.remotemanager.entity.Device;
 
-public class ManagedDeviceAdapter extends ArrayAdapter<ManagedDeviceAdapter.ManagedDevice> {
+public class ManagedDeviceAdapter extends ArrayAdapter<Device> {
     private final LayoutInflater inflater;
 
-    public ManagedDeviceAdapter(Context context, List<ManagedDevice> devices) {
+    public ManagedDeviceAdapter(Context context, List<Device> devices) {
         super(context, 0, devices);
         inflater = LayoutInflater.from(context);
     }
@@ -30,21 +31,13 @@ public class ManagedDeviceAdapter extends ArrayAdapter<ManagedDeviceAdapter.Mana
         } else {
             holder = (ViewHolder) convertView.getTag();
         }
-        ManagedDevice device = getItem(position);
-        holder.tvName.setText(device.name);
-        // Optionally set icon here if you have different icons
+        Device device = getItem(position);
+        holder.tvName.setText(device.getName());
         return convertView;
     }
 
     static class ViewHolder {
         ImageView ivIcon;
         TextView tvName;
-    }
-
-    public static class ManagedDevice {
-        public String name;
-        public ManagedDevice(String name) {
-            this.name = name;
-        }
     }
 }

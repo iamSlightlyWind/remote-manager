@@ -2,11 +2,15 @@ package dev.themajorones.remotemanager.entity;
 
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
+import dev.themajorones.remotemanager.utils.DeviceListConverter;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import androidx.annotation.NonNull;
+import androidx.room.TypeConverters;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.Setter;
 
 @Entity(tableName = "Device")
@@ -23,7 +27,8 @@ public class Device {
 
     public String os;
 
-    public Long managerId;
+    @TypeConverters(DeviceListConverter.class)
+    public List<Device> managingDevices;
 
     public String host;
 
@@ -60,7 +65,24 @@ public class Device {
         return true;
     }
 
-    public boolean isWakeOnLanAble() {
-        return macAddress != null && !macAddress.isEmpty();
+    public boolean addManagingDevice(Device device) {
+        if (managingDevices == null) {
+            managingDevices = new ArrayList<>();
+        }
+        
+        if (!managingDevices.contains(device)) {
+            managingDevices.add(device);
+            return true;
+        }
+
+        return false;
+    }
+
+    public boolean removesManagingDevice(Device device) {
+        if (managingDevices != null && managingDevices.contains(device)) {
+            managingDevices.remove(device);
+            return true;
+        }
+        return false;
     }
 }
