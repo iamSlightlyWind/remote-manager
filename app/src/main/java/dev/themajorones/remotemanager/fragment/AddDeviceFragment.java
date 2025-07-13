@@ -3,10 +3,16 @@ package dev.themajorones.remotemanager.fragment;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+
 import androidx.fragment.app.Fragment;
 import androidx.annotation.NonNull;
+
 import com.google.android.material.textfield.TextInputEditText;
+
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
+
 import dev.themajorones.remotemanager.R;
 import dev.themajorones.remotemanager.entity.Device;
 import dev.themajorones.remotemanager.entity.SecureShell;
@@ -85,13 +91,22 @@ public class AddDeviceFragment extends Fragment {
     private void onDeleteButtonClick() {
         String deviceName = Objects.requireNonNull(nameInput.getText()).toString();
         Device device = PersistentStorageService.get().findByName(deviceName);
+        List<Device> managedDevices = new ArrayList<>();
 
         if (device != null) {
+            managedDevices = PersistentStorageService.get().findManagedDevices(device);
+
             PersistentStorageService.get().delete(device);
             ViewUtils.notify("Device deleted successfully");
             onResetButtonClick();
         } else {
+            managedDevices = PersistentStorageService.get().findManagedDevices(savedDevice);
             PersistentStorageService.get().delete(savedDevice);
+        }
+
+        for (Device managedDevice : managedDevices) {
+            managedDevice.removesManagingDevice(device);
+            PersistentStorageService.get().save(managedDevice);
         }
 
         onResetButtonClick();
@@ -99,6 +114,8 @@ public class AddDeviceFragment extends Fragment {
 
     private void onSaveButtonClick() {
         String name, host, username, password, os, macAddress;
+        List<Device> managedDevices = PersistentStorageService.get().findManagedDevices(savedDevice);
+        List<Device> managingDevices = savedDevice != null ? savedDevice.getManagingDevices() : new ArrayList<>();
         int port;
 
         try {
@@ -122,12 +139,6 @@ public class AddDeviceFragment extends Fragment {
             password = Objects.requireNonNull(passwordInput.getText()).toString();
             port = Integer.parseInt(Objects.requireNonNull(portInput.getText()).toString());
             os = Objects.requireNonNull(osInput.getText()).toString();
-
-            if (os.isEmpty()) {
-                ViewUtils.notify("OS cannot be empty");
-                return;
-            }
-
             macAddress = Objects.requireNonNull(macAddressInput.getText()).toString();
         } catch (NumberFormatException e) {
             ViewUtils.notify("Port must be a number");
@@ -145,12 +156,19 @@ public class AddDeviceFragment extends Fragment {
                 .port(port)
                 .os(os)
                 .macAddress(macAddress)
+                .managingDevices(managingDevices)
                 .build();
 
         if (savedDevice != null) {
             if (!newDevice.getName().equals(savedDevice.getName())) {
                 PersistentStorageService.get().delete(savedDevice);
             }
+        }
+
+        for (Device managedDevice : managedDevices) {
+            managedDevice.removesManagingDevice(savedDevice);
+            managedDevice.addManagingDevice(newDevice);
+            PersistentStorageService.get().save(managedDevice);
         }
 
         newDevice = PersistentStorageService.get().save(newDevice);

@@ -1,6 +1,5 @@
 package dev.themajorones.remotemanager.service;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -18,7 +17,7 @@ public class SSHService {
 
     public SecureShell getConnection(Device device) throws Exception {
         SecureShell shell;
-        if (connectionExists(device)) {
+        if (connections.containsKey(device)) {
             shell = connections.get(device);
             if (!Objects.requireNonNull(shell).isSessionAlive()) {
                 shell.connect(device);
@@ -42,11 +41,37 @@ public class SSHService {
         }
     }
 
-    public Device sshFillInfo(String host, String username, String password) { // ssh into the device to get info (os,
-        return null;
+    public boolean connectToSecondDevice(Device via, Device target) {
+        try {
+            SecureShell shell = getConnection(via);
+            String cmd = String.format("ssh -tt %s@%s exit",target.getUsername(), target.getHost());
+            String result = shell.execWithInput(cmd, target.getPassword());
+            return result != null;
+        } catch (Exception e) {
+            return false;
+        }
     }
 
-    private boolean connectionExists(Device device) {
-        return connections.containsKey(device);
+    public boolean isSecondDeviceAlive(Device via, Device target) {
+        return connectToSecondDevice(via, target);
+    }
+
+    public boolean shutdownSecondDevice(Device via, Device target) {
+        try {
+            if (!isSecondDeviceAlive(via, target)) {
+                ViewUtils.notify("Target device is not reachable via " + via.getHost());
+                return false;
+            }
+            SecureShell shell = getConnection(via);
+            String nested = String.format(
+                    "ssh -tt %s@%s \"echo %s | sudo -S shutdown -h now\"",
+                    target.getUsername(), target.getHost(), target.getPassword()
+            );
+            String output = shell.runPtyCommand(nested);
+            return output != null;
+        } catch (Exception e) {
+            ViewUtils.throwNotify("Shutdown failed: ", e);
+            return false;
+        }
     }
 }

@@ -4,25 +4,25 @@ import net.schmizz.sshj.SSHClient;
 import net.schmizz.sshj.connection.channel.direct.Session;
 import net.schmizz.sshj.transport.TransportException;
 import net.schmizz.sshj.transport.verification.PromiscuousVerifier;
-
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.nio.charset.StandardCharsets;
 import java.security.Security;
+import java.util.Collections;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 
 import dev.themajorones.remotemanager.utils.ViewUtils;
 
 public class SecureShell {
-
     private final ExecutorService io = Executors.newSingleThreadExecutor();
     private String devicePassword = "";
+    private final SSHClient sshClient;
 
     static {
         Security.removeProvider("BC");
@@ -32,8 +32,6 @@ public class SecureShell {
     static void init() {
         // intentional empty method to ensure BouncyCastle is initialized
     }
-
-    private final SSHClient sshClient;
 
     public SecureShell() {
         Security.removeProvider("BC");
@@ -58,6 +56,7 @@ public class SecureShell {
     public void connect(Device device) throws Exception {
         if (!device.isSshAble()) {
             ViewUtils.notify("Missing device details");
+            return;
         }
 
         connect(device.getHost(), 22, device.getUsername(), device.getPassword(), device.getKeyPath());
@@ -84,16 +83,68 @@ public class SecureShell {
         });
 
         try {
-            // wait up to 2 seconds
             return future.get(3, TimeUnit.SECONDS);
-        } catch (TimeoutException e) {
+        } catch (Exception e) {
             future.cancel(true);
-            ViewUtils.notify("Command timed out");
+            ViewUtils.notify("Command timed out or failed");
             return null;
+        }
+    }
+
+    public String execWithInput(String command, String input) {
+        Future<String> future = io.submit(() -> {
+            try (Session session = sshClient.startSession()) {
+                session.allocatePTY("xterm", 80, 24, 0, 0, Collections.emptyMap());
+                Session.Command cmd = session.exec(command);
+                try (OutputStream stdin = cmd.getOutputStream()) {
+                    stdin.write((input + "\n").getBytes(StandardCharsets.UTF_8));
+                    stdin.flush();
+                }
+                BufferedReader reader = new BufferedReader(
+                        new InputStreamReader(cmd.getInputStream())
+                );
+                StringBuilder sb = new StringBuilder();
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    sb.append(line).append("\n");
+                }
+                cmd.join();
+                return sb.toString();
+            }
+        });
+        try {
+            return future.get(5, TimeUnit.SECONDS);
         } catch (Exception e) {
             if (!(e instanceof TransportException)) {
                 ViewUtils.throwNotify("Failed: ", e);
             }
+            future.cancel(true);
+            return null;
+        }
+    }
+
+    public String runPtyCommand(String command) {
+        Future<String> future = io.submit(() -> {
+            try (Session session = sshClient.startSession()) {
+                session.allocatePTY("xterm", 80, 24, 0, 0, Collections.emptyMap());
+                Session.Command cmd = session.exec(command);
+                BufferedReader reader = new BufferedReader(
+                        new InputStreamReader(cmd.getInputStream())
+                );
+                StringBuilder sb = new StringBuilder();
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    sb.append(line).append("\n");
+                }
+                cmd.join();
+                return sb.toString();
+            }
+        });
+        try {
+            return future.get(10, TimeUnit.SECONDS);
+        } catch (Exception e) {
+            future.cancel(true);
+            ViewUtils.throwNotify("Failed: ", e);
             return null;
         }
     }

@@ -32,6 +32,18 @@ public class DeviceUtils {
         }
     }
 
+    public static void shutdownNestedDevice(Device managing, Device managed) {
+        SSHService ssh = SSHService.get();
+        boolean canReach = ssh.isSecondDeviceAlive(managing, managed);
+
+        if (!canReach) {
+            ViewUtils.notify("Cannot reach " + managed.getName());
+            return;
+        }
+
+        boolean shut = ssh.shutdownSecondDevice(managing, managed);
+    }
+
     public static void shutdownUnix(Device device) {
         SecureShell shell = null;
         try {
