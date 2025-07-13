@@ -7,18 +7,23 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+
 import android.widget.ArrayAdapter;
+
 import dev.themajorones.remotemanager.MainActivity;
 import dev.themajorones.remotemanager.R;
 import dev.themajorones.remotemanager.entity.Device;
 import dev.themajorones.remotemanager.utils.DeviceUtils;
+
 import java.util.List;
+import java.util.Objects;
 
 public class DeviceItemAdapter extends ArrayAdapter<Device> {
 
-    private MainActivity activity;
+    private final MainActivity activity;
 
     public DeviceItemAdapter(@NonNull Context context, @NonNull List<Device> devices) {
         super(context, 0, devices);
@@ -47,7 +52,7 @@ public class DeviceItemAdapter extends ArrayAdapter<Device> {
                 case "macos" -> logoImageView.setImageResource(R.drawable.macos);
                 default -> logoImageView.setImageResource(R.drawable.windows);
             }
-            
+
             deviceInfoTextView.setText(device.getName());
             actionButton.setOnClickListener(v -> DeviceUtils.wakeOnLanLocally(device));
             editButton.setOnClickListener(v -> DeviceUtils.shutdownUnix(device));
@@ -59,7 +64,7 @@ public class DeviceItemAdapter extends ArrayAdapter<Device> {
                 activity.spawnAddDeviceFragment();
                 adf = AddDeviceFragment.getInstance();
             }
-            adf.editDevice(device);
+            adf.editDevice(Objects.requireNonNull(device));
         });
 
 

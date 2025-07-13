@@ -7,10 +7,12 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.ListAdapter;
 import android.widget.Toast;
+
 import androidx.annotation.IdRes;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
+
 import java.util.List;
 
 public class ViewUtils {
@@ -47,7 +49,7 @@ public class ViewUtils {
     }
 
     public static void replaceFragment(@NonNull FragmentActivity host, @IdRes int containerId, @NonNull Fragment frag) {
-        try{
+        try {
             host.getSupportFragmentManager()
                     .beginTransaction()
                     .replace(containerId, frag)

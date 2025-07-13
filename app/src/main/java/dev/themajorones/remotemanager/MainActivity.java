@@ -7,11 +7,14 @@ import android.os.Looper;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
+
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.window.layout.FoldingFeature;
+
 import java.util.ArrayList;
 import java.util.List;
+
 import dev.themajorones.remotemanager.fragment.AddDeviceFragment;
 import dev.themajorones.remotemanager.entity.Device;
 import dev.themajorones.remotemanager.fragment.DeviceItemAdapter;
@@ -44,24 +47,21 @@ public class MainActivity extends AppCompatActivity {
 
     private void setupButtonTriggers(Bundle savedInstanceState) {
         Button deviceManagerButton = findViewById(R.id.button1);
-        if (deviceManagerButton instanceof VerticalMaterialButton) {
-            VerticalMaterialButton vButton1 = (VerticalMaterialButton) deviceManagerButton;
+        if (deviceManagerButton instanceof VerticalMaterialButton vButton1) {
             vButton1.setOnClickListener(v -> onPressDeviceManagerButton());
         } else if (deviceManagerButton != null) {
             deviceManagerButton.setOnClickListener(v -> onPressDeviceManagerButton());
         }
 
         Button deviceHierarchyButton = findViewById(R.id.button2);
-        if (deviceHierarchyButton instanceof VerticalMaterialButton) {
-            VerticalMaterialButton vButton2 = (VerticalMaterialButton) deviceHierarchyButton;
+        if (deviceHierarchyButton instanceof VerticalMaterialButton vButton2) {
             vButton2.setOnClickListener(v -> onPressDeviceHierarchyButton());
         } else if (deviceHierarchyButton != null) {
             deviceHierarchyButton.setOnClickListener(v -> onPressDeviceHierarchyButton());
         }
 
         Button settingsButton = findViewById(R.id.settingsButton);
-        if (settingsButton instanceof VerticalMaterialButton) {
-            VerticalMaterialButton vSettingsButton = (VerticalMaterialButton) settingsButton;
+        if (settingsButton instanceof VerticalMaterialButton vSettingsButton) {
             vSettingsButton.setOnClickListener(v -> ViewUtils.notify("Settings button clicked"));
         } else if (settingsButton != null) {
             settingsButton.setOnClickListener(v -> ViewUtils.notify("Settings button clicked"));

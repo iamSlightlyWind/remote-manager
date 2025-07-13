@@ -3,6 +3,7 @@ package dev.themajorones.remotemanager.utils;
 import android.content.Context;
 import android.net.DhcpInfo;
 import android.net.wifi.WifiManager;
+
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
@@ -51,11 +52,11 @@ public class WakeOnLanUtils {
             macBytes[i] = (byte) Integer.parseInt(hex[i], 16);
         }
         byte[] packet = new byte[6 + 16 * macBytes.length];
-        
+
         for (int i = 0; i < 6; i++) {
             packet[i] = (byte) 0xFF;
         }
-        
+
         for (int i = 6; i < packet.length; i += macBytes.length) {
             System.arraycopy(macBytes, 0, packet, i, macBytes.length);
         }

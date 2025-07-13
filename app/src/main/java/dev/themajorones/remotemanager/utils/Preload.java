@@ -4,13 +4,13 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.pm.ActivityInfo;
 import android.content.res.Resources;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.WindowCompat;
 
 import com.google.android.material.color.DynamicColors;
 
 import dev.themajorones.remotemanager.service.PersistentStorageService;
-import dev.themajorones.remotemanager.service.development.DataLoader;
 import lombok.Getter;
 
 public class Preload {
@@ -49,7 +49,7 @@ public class Preload {
         System.setProperty("org.slf4j.simpleLogger.log.net.schmizz.sshj", "debug");
     }
 
-    private static void preventOverDraw(AppCompatActivity activity){
+    private static void preventOverDraw(AppCompatActivity activity) {
         WindowCompat.setDecorFitsSystemWindows(activity.getWindow(), true);
     }
 }

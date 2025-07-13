@@ -6,13 +6,20 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+
 import dev.themajorones.remotemanager.entity.Device;
 import dev.themajorones.remotemanager.service.PersistentStorageService;
+
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ListAdapter;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+
 import java.util.List;
+import java.util.Objects;
+
 import dev.themajorones.remotemanager.R;
 import dev.themajorones.remotemanager.utils.ViewUtils;
 
@@ -24,8 +31,9 @@ public class ManagingDeviceAdapter extends ArrayAdapter<Device> {
         inflater = LayoutInflater.from(context);
     }
 
+    @NonNull
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(int position, View convertView, @NonNull ViewGroup parent) {
         ViewHolder holder;
         if (convertView == null) {
             convertView = inflater.inflate(R.layout.item_managing_device, parent, false);
@@ -40,7 +48,7 @@ public class ManagingDeviceAdapter extends ArrayAdapter<Device> {
         }
 
         Device device = getItem(position);
-        holder.manageingDevice.setText(device.getName());
+        holder.manageingDevice.setText(Objects.requireNonNull(device).getName());
 
         List<Device> managedDevices = PersistentStorageService.findManagedDevices(device);
         ManagedDeviceAdapter managedAdapter = new ManagedDeviceAdapter(getContext(), device, managedDevices);
@@ -65,7 +73,7 @@ public class ManagingDeviceAdapter extends ArrayAdapter<Device> {
 
         holder.expander.setOnClickListener(toggleListener);
         holder.manageingDevice.setOnClickListener(toggleListener);
-        holder.addManagedDevice.setOnClickListener(v -> {ViewUtils.notify("Add Managed Device pressed for " + device.getName());});
+        holder.addManagedDevice.setOnClickListener(v -> ViewUtils.notify("Add Managed Device pressed for " + device.getName()));
 
         return convertView;
     }

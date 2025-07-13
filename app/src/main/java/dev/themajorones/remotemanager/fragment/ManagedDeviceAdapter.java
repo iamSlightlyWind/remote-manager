@@ -9,7 +9,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Button;
 
+import androidx.annotation.NonNull;
+
 import java.util.List;
+import java.util.Objects;
 
 import dev.themajorones.remotemanager.utils.DeviceUtils;
 import dev.themajorones.remotemanager.utils.ViewUtils;
@@ -26,8 +29,9 @@ public class ManagedDeviceAdapter extends ArrayAdapter<Device> {
         inflater = LayoutInflater.from(context);
     }
 
+    @NonNull
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(int position, View convertView, @NonNull ViewGroup parent) {
         ViewHolder holder;
         if (convertView == null) {
             convertView = inflater.inflate(R.layout.item_managed_device, parent, false);
@@ -42,7 +46,7 @@ public class ManagedDeviceAdapter extends ArrayAdapter<Device> {
             holder = (ViewHolder) convertView.getTag();
         }
         Device device = getItem(position);
-        holder.tvName.setText(device.getName());
+        holder.tvName.setText(Objects.requireNonNull(device).getName());
         String childName = device.getName();
         String parentName = parentDevice.getName();
         holder.btnBoot.setOnClickListener(v -> ViewUtils.notify("Boot pressed for " + childName + " managed by " + parentName));

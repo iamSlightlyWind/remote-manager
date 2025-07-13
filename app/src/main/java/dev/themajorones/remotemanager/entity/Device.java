@@ -2,15 +2,19 @@ package dev.themajorones.remotemanager.entity;
 
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
+
 import dev.themajorones.remotemanager.utils.DeviceListConverter;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
 import androidx.annotation.NonNull;
 import androidx.room.TypeConverters;
+
 import java.util.ArrayList;
 import java.util.List;
+
 import lombok.Setter;
 
 @Entity(tableName = "Device")
@@ -61,15 +65,14 @@ public class Device {
         if (host == null || host.isEmpty()) return false;
         if (username == null || username.isEmpty()) return false;
         if (password == null || password.isEmpty()) return false;
-        if (port <= 0) return false;
-        return true;
+        return port > 0;
     }
 
     public boolean addManagingDevice(Device device) {
         if (managingDevices == null) {
             managingDevices = new ArrayList<>();
         }
-        
+
         if (!managingDevices.contains(device)) {
             managingDevices.add(device);
             return true;
