@@ -1,11 +1,16 @@
 package dev.themajorones.remotemanager.utils;
 
 import android.content.res.Resources;
+
 import androidx.window.layout.FoldingFeature;
+
 import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import dev.themajorones.remotemanager.entity.Device;
 import dev.themajorones.remotemanager.entity.SecureShell;
+import dev.themajorones.remotemanager.service.SSHService;
 
 public class DeviceUtils {
 
@@ -27,7 +32,31 @@ public class DeviceUtils {
         }
     }
 
-    public static String getOSName(SecureShell shell){
+    public static void shutdownUnix(Device device) {
+        SecureShell shell = null;
+        try {
+            shell = SSHService.get().getConnection(device);
+            try {
+                shell.runCommand("sudo shutdown -h now");
+            } catch (Exception e) {
+                ViewUtils.throwNotify("Failed: ", e);
+            }
+        } catch (Exception e) {
+            ViewUtils.throwNotify("Failed: ", e);
+        }
+
+    }
+
+    public static void wakeOnLanLocally(Device device) {
+        String macAddress = device.getMacAddress();
+        if (macAddress == null || macAddress.isEmpty()) {
+            ViewUtils.notify("MAC address is required for Wake on LAN");
+            return;
+        }
+        WakeOnLanUtils.wake(macAddress);
+    }
+
+    public static String getOSName(SecureShell shell) {
         String uname = shell.runCommand("uname -s").trim().toLowerCase();
         return switch (uname.toLowerCase().trim()) {
             case "linux" -> "Linux";
@@ -41,8 +70,10 @@ public class DeviceUtils {
         String os = getOSName(shell);
         return switch (os) {
             case "Linux" -> getMacFromLinuxIPA(shell.runCommand("ip a"), interfaceAddress);
-            case "macOS" -> getMacFromMacIfconfig(shell.runCommand("ifconfig -a"), interfaceAddress);
-            case "Windows" -> shell.runCommand("getmac /v /fo csv").split(",")[0].replaceAll("\"", "");
+            case "macOS" ->
+                    getMacFromMacIfconfig(shell.runCommand("ifconfig -a"), interfaceAddress);
+            case "Windows" ->
+                    shell.runCommand("getmac /v /fo csv").split(",")[0].replaceAll("\"", "");
             default -> throw new UnsupportedOperationException("Unsupported OS: " + os);
         };
     }
@@ -94,6 +125,7 @@ public class DeviceUtils {
         }
         return null;
     }
+
     public static boolean isFolded(FoldingFeature foldingFeature) {
         return isFoldable(foldingFeature) && foldingFeature.getState() != FoldingFeature.State.FLAT && foldingFeature.getState() != FoldingFeature.State.HALF_OPENED;
     }

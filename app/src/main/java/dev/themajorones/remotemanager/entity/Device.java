@@ -51,4 +51,16 @@ public class Device {
                 java.util.Objects.equals(keyPath, device.keyPath) &&
                 java.util.Objects.equals(macAddress, device.macAddress);
     }
+
+    public boolean isSshAble() {
+        if (host == null || host.isEmpty()) return false;
+        if (username == null || username.isEmpty()) return false;
+        if (password == null || password.isEmpty()) return false;
+        if (port <= 0) return false;
+        return true;
+    }
+
+    public boolean isWakeOnLanAble() {
+        return macAddress != null && !macAddress.isEmpty();
+    }
 }

@@ -18,6 +18,7 @@ import dev.themajorones.remotemanager.fragment.DeviceItemAdapter;
 import dev.themajorones.remotemanager.service.PersistentStorageService;
 import dev.themajorones.remotemanager.utils.Preload;
 import dev.themajorones.remotemanager.utils.ViewUtils;
+import lombok.Getter;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -41,9 +42,11 @@ public class MainActivity extends AppCompatActivity {
 
     private void setupButtonTriggers(Bundle savedInstanceState) {
         Button addDeviceButton = findViewById(R.id.addDeviceButton);
-        addDeviceButton.setOnClickListener(v -> {
-            ViewUtils.replaceFragment(this, R.id.detailPane, new AddDeviceFragment());
-        });
+        addDeviceButton.setOnClickListener(v -> spawnAddDeviceFragment());
+    }
+
+    public void spawnAddDeviceFragment() {
+        ViewUtils.replaceFragment(this, R.id.detailPane, new AddDeviceFragment());
     }
 
     private final Runnable deviceListUpdater = new Runnable() {
@@ -61,7 +64,6 @@ public class MainActivity extends AppCompatActivity {
         if (!devices.equals(currentDevices)) {
             currentDevices = devices;
             DeviceItemAdapter adapter = new DeviceItemAdapter(this, currentDevices);
-            ViewUtils.Notify(this, "Device list updated");
             ViewUtils.fillListView(listView, adapter);
         }
     }

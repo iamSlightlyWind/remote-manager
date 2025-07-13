@@ -10,16 +10,21 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import android.widget.ArrayAdapter;
+
+import dev.themajorones.remotemanager.MainActivity;
 import dev.themajorones.remotemanager.R;
 import dev.themajorones.remotemanager.entity.Device;
-import dev.themajorones.remotemanager.utils.ViewUtils;
+import dev.themajorones.remotemanager.utils.DeviceUtils;
 
 import java.util.List;
 
 public class DeviceItemAdapter extends ArrayAdapter<Device> {
 
+    private MainActivity activity;
+
     public DeviceItemAdapter(@NonNull Context context, @NonNull List<Device> devices) {
         super(context, 0, devices);
+        activity = (MainActivity) context;
     }
 
     @NonNull
@@ -32,15 +37,32 @@ public class DeviceItemAdapter extends ArrayAdapter<Device> {
         Device device = getItem(position);
 
         if (device != null) {
-            ImageView logoImageView = convertView.findViewById(R.id.logoImageView);
+            ImageView logoImageView = convertView.findViewById(R.id.logo_image_view);
             TextView deviceInfoTextView = convertView.findViewById(R.id.deviceInfoTextView);
-            Button actionButton = convertView.findViewById(R.id.actionButton);
-            Button editButton = convertView.findViewById(R.id.editButton);
+            Button actionButton = convertView.findViewById(R.id.button1);
+            Button editButton = convertView.findViewById(R.id.button2);
 
+            String os = device.getOs().toLowerCase();
+            switch (os) {
+                case "linux" -> logoImageView.setImageResource(R.drawable.linux);
+                case "windows" -> logoImageView.setImageResource(R.drawable.windows);
+                case "macos" -> logoImageView.setImageResource(R.drawable.macos);
+            }
+            
             deviceInfoTextView.setText(device.getName());
-            actionButton.setOnClickListener(v -> ViewUtils.Notify(getContext(), "Action for " + device.getName()));
-            editButton.setOnClickListener(v -> ViewUtils.Notify(getContext(), "Edit for " + device.getName()));
+            actionButton.setOnClickListener(v -> DeviceUtils.wakeOnLanLocally(device));
+            editButton.setOnClickListener(v -> DeviceUtils.shutdownUnix(device));
         }
+
+        convertView.setOnClickListener(v -> {
+            AddDeviceFragment adf = AddDeviceFragment.getInstance();
+            if (adf == null) {
+                activity.spawnAddDeviceFragment();
+                adf = AddDeviceFragment.getInstance();
+            }
+            adf.editDevice(device);
+        });
+
 
         return convertView;
     }

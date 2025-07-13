@@ -10,6 +10,8 @@ public class DataLoader {
     private static final SSHService sshService = SSHService.get();
 
     public static void loadData() {
+        //PersistentStorageService.get().deleteAll();
+
         if(PersistentStorageService.get().count() > 0) {
             return; // Data already exists, no need to load again
         }
@@ -20,18 +22,16 @@ public class DataLoader {
                 .name("Big Screen")
                 .host("192.168.50.100")
                 .username("slightlywind")
-                .password("301203")
+                .port(22)
                 .os("Linux")
-                .keyPath(null)
                 .build();
 
         Device windstation = Device.builder()
                 .name("Windstation")
                 .host("192.168.50.168")
                 .username("slightlywind")
-                .password("301203")
+                .port(22)
                 .os("Linux")
-                .keyPath(null)
                 .build();
 
         devices.add(bigscreen);

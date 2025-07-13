@@ -1,16 +1,24 @@
 package dev.themajorones.remotemanager.utils;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.pm.ActivityInfo;
 import android.content.res.Resources;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.WindowCompat;
 import dev.themajorones.remotemanager.service.PersistentStorageService;
 import dev.themajorones.remotemanager.service.development.DataLoader;
+import lombok.Getter;
 
 public class Preload {
 
+    @Getter
+    @SuppressLint("StaticFieldLeak")
+    private static Context context;
+
     public static void load(AppCompatActivity activity) {
+        context = activity.getApplicationContext();
+
         PersistentStorageService.init(activity);
         DataLoader.loadData();
         preventRotation(activity);

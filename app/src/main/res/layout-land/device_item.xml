@@ -15,11 +15,11 @@
         android:gravity="center_vertical">
 
         <ImageView
-            android:id="@+id/logoImageView"
+            android:id="@+id/logo_image_view"
             android:layout_width="0dp"
             android:layout_height="64dp"
             android:layout_weight="1"
-            android:src="@drawable/tux"
+            android:src="@drawable/linux"
             android:contentDescription="@null"
             android:padding="8dp" />
 
@@ -41,20 +41,20 @@
             android:orientation="vertical">
 
             <com.google.android.material.button.MaterialButton
-                android:id="@+id/actionButton"
+                android:id="@+id/button1"
                 style="@style/Widget.MaterialComponents.Button.OutlinedButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/action"
+                android:text="@string/button1"
                 android:insetTop="4dp"
                 android:insetBottom="4dp"/>
 
             <com.google.android.material.button.MaterialButton
-                android:id="@+id/editButton"
+                android:id="@+id/button2"
                 style="@style/Widget.MaterialComponents.Button.OutlinedButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/edit"
+                android:text="@string/button2"
                 android:insetTop="4dp"
                 android:insetBottom="4dp"/>
         </LinearLayout>

@@ -8,13 +8,23 @@ import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class WakeOnLanUtils {
 
-    public static void wake(Context context, String macAddress) throws Exception {
-        InetAddress broadcast = getBroadcastAddress(context);
-        byte[] packet = buildMagicPacket(macAddress);
-        sendPacket(broadcast, packet, 9);
+    private static final ExecutorService exec = Executors.newSingleThreadExecutor();
+
+    public static void wake(String macAddress) {
+        exec.submit(() -> {
+            try {
+                InetAddress broadcast = getBroadcastAddress(Preload.getContext());
+                byte[] packet = buildMagicPacket(macAddress);
+                sendPacket(broadcast, packet, 9);
+            } catch (Exception e) {
+                ViewUtils.throwNotify("Failed: ", e);
+            }
+        });
     }
 
     private static InetAddress getBroadcastAddress(Context ctx) throws Exception {

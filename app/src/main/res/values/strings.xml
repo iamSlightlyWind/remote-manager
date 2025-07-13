@@ -1,8 +1,8 @@
 <resources>
     <string name="app_name">Remote Manager</string>
     <string name="device_info">DeviceInfo</string>
-    <string name="action">Action</string>
-    <string name="edit">Edit</string>
+    <string name="button1">Wake On Lan</string>
+    <string name="button2">Shutdown</string>
     <string name="host">Host</string>
     <string name="os">OS</string>
     <string name="cpu">CPU</string>
@@ -25,4 +25,5 @@
     <string name="add_device">Add Device</string>
     <string name="name">Name</string>
     <string name="enter_name">Enter Device Name</string>
+    <string name="delete">Delete</string>
 </resources>

@@ -14,6 +14,7 @@ import androidx.fragment.app.FragmentActivity;
 import java.util.List;
 
 public class ViewUtils {
+
     public static <T> void fillListView(Context context, ListView listView, List<T> items) {
         ArrayAdapter<T> adapter = new ArrayAdapter<>(
                 context,
@@ -31,15 +32,28 @@ public class ViewUtils {
         LayoutInflater.from(container.getContext()).inflate(layoutResId, container, true);
     }
 
-    public static void Notify(Context context, String message) {
-        Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
+    public static void notify(String message) {
+        Toast.makeText(Preload.getContext(), message, Toast.LENGTH_SHORT).show();
+    }
+
+    public static void throwNotify(String message, Throwable e) {
+        String exName = e.getClass().getSimpleName();
+        String msg = e.getMessage();
+        if (msg != null && msg.contains(":")) {
+            msg = msg.substring(msg.indexOf(':') + 1).trim();
+        }
+        String formatted = exName + (msg == null || msg.isEmpty() ? "" : ": " + msg);
+        notify(message + formatted);
     }
 
     public static void replaceFragment(@NonNull FragmentActivity host, @IdRes int containerId, @NonNull Fragment frag) {
-        host.getSupportFragmentManager()
-                .beginTransaction()
-                .replace(containerId, frag)
-                .addToBackStack(null)
-                .commit();
+        try{
+            host.getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(containerId, frag)
+                    .commitNow();
+        } catch (Exception e) {
+            throwNotify("Failed to replace fragment: ", e);
+        }
     }
 }
