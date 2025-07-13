@@ -42,6 +42,8 @@ public class DeviceUtils {
         }
 
         boolean shut = ssh.shutdownSecondDevice(managing, managed);
+
+        return;
     }
 
     public static void shutdownUnix(Device device) {
@@ -70,6 +72,9 @@ public class DeviceUtils {
 
     public static String getOSName(SecureShell shell) {
         String uname = shell.runCommand("uname -s").trim().toLowerCase();
+        if (uname == null || uname.isEmpty()) {
+            return " ";
+        }
         return switch (uname.toLowerCase().trim()) {
             case "linux" -> "Linux";
             case "darwin" -> "macOS";

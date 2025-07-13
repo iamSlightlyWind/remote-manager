@@ -1,8 +1,15 @@
 package dev.themajorones.remotemanager.service;
 
+import net.schmizz.sshj.SSHClient;
+import net.schmizz.sshj.connection.channel.direct.Session;
+import net.schmizz.sshj.transport.verification.PromiscuousVerifier;
+
+import java.net.Socket;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.concurrent.TimeUnit;
+
 import dev.themajorones.remotemanager.entity.Device;
 import dev.themajorones.remotemanager.entity.SecureShell;
 import dev.themajorones.remotemanager.utils.ViewUtils;
@@ -44,7 +51,7 @@ public class SSHService {
     public boolean connectToSecondDevice(Device via, Device target) {
         try {
             SecureShell shell = getConnection(via);
-            String cmd = String.format("ssh -tt %s@%s exit",target.getUsername(), target.getHost());
+            String cmd = String.format("ssh -tt %s@%s exit", target.getUsername(), target.getHost());
             String result = shell.execWithInput(cmd, target.getPassword());
             return result != null;
         } catch (Exception e) {

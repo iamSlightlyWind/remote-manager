@@ -4,7 +4,9 @@ import net.schmizz.sshj.SSHClient;
 import net.schmizz.sshj.connection.channel.direct.Session;
 import net.schmizz.sshj.transport.TransportException;
 import net.schmizz.sshj.transport.verification.PromiscuousVerifier;
+
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -44,11 +46,7 @@ public class SecureShell {
         devicePassword = password;
         io.submit(() -> {
             sshClient.connect(host, port);
-            if (keyPath != null) {
-                sshClient.authPublickey(user, keyPath);
-            } else {
-                sshClient.authPassword(user, password);
-            }
+            sshClient.authPassword(user, password);
             return null;
         }).get();
     }
@@ -113,7 +111,7 @@ public class SecureShell {
             }
         });
         try {
-            return future.get(5, TimeUnit.SECONDS);
+            return future.get(60, TimeUnit.SECONDS);
         } catch (Exception e) {
             if (!(e instanceof TransportException)) {
                 ViewUtils.throwNotify("Failed: ", e);
