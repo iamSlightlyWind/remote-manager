@@ -19,6 +19,7 @@ import dev.themajorones.remotemanager.service.PersistentStorageService;
 import dev.themajorones.remotemanager.service.development.DataLoader;
 import dev.themajorones.remotemanager.utils.Preload;
 import dev.themajorones.remotemanager.utils.ViewUtils;
+import dev.themajorones.remotemanager.utils.button.VerticalMaterialButton;
 import lombok.Getter;
 
 public class MainActivity extends AppCompatActivity {
@@ -45,6 +46,30 @@ public class MainActivity extends AppCompatActivity {
         Button addDeviceButton = findViewById(R.id.addDeviceButton);
         addDeviceButton.setOnClickListener(v -> spawnAddDeviceFragment());
         addDeviceButton.setOnLongClickListener( v -> DataLoader.loadData());
+
+        Button button1 = findViewById(R.id.button1);
+        if (button1 instanceof VerticalMaterialButton) {
+            VerticalMaterialButton vButton1 = (VerticalMaterialButton) button1;
+            vButton1.setOnClickListener(v -> ViewUtils.notify("Button 1 clicked"));
+        } else if (button1 != null) {
+            button1.setOnClickListener(v -> ViewUtils.notify("Button 1 clicked"));
+        }
+
+        Button button2 = findViewById(R.id.button2);
+        if (button2 instanceof VerticalMaterialButton) {
+            VerticalMaterialButton vButton2 = (VerticalMaterialButton) button2;
+            vButton2.setOnClickListener(v -> ViewUtils.notify("Button 2 clicked"));
+        } else if (button2 != null) {
+            button2.setOnClickListener(v -> ViewUtils.notify("Button 2 clicked"));
+        }
+        
+        Button settingsButton = findViewById(R.id.settingsButton);
+        if (settingsButton instanceof VerticalMaterialButton) {
+            VerticalMaterialButton vSettingsButton = (VerticalMaterialButton) settingsButton;
+            vSettingsButton.setOnClickListener(v -> ViewUtils.notify("Settings button clicked"));
+        } else if (settingsButton != null) {
+            settingsButton.setOnClickListener(v -> ViewUtils.notify("Settings button clicked"));
+        }
     }
 
     public void spawnAddDeviceFragment() {
