@@ -20,7 +20,6 @@ import dev.themajorones.remotemanager.service.development.DataLoader;
 import dev.themajorones.remotemanager.utils.Preload;
 import dev.themajorones.remotemanager.utils.ViewUtils;
 import dev.themajorones.remotemanager.utils.button.VerticalMaterialButton;
-import lombok.Getter;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -37,7 +36,7 @@ public class MainActivity extends AppCompatActivity {
         Preload.load(this);
         setContentView(R.layout.activity_main);
 
-        ViewUtils.replaceElement(findViewById(R.id.mainContent), R.layout.view_list_detail);
+        ViewUtils.replaceElement(findViewById(R.id.mainContent), R.layout.detail_list);
         setupButtonTriggers(savedInstanceState);
         handler.post(deviceListUpdater);
     }

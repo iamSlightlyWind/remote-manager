@@ -12,16 +12,14 @@
         android:layout_weight="1.75"
         android:background="?attr/colorSurfaceContainer"
         android:orientation="vertical"
-        android:padding="8dp"
-        android:weightSum="100">
+        android:padding="8dp">
 
         <dev.themajorones.remotemanager.utils.button.VerticalMaterialButton
             android:id="@+id/button1"
             style="@style/Widget.Material3.Button"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
+            android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
-            android:layout_weight="12"
             android:backgroundTint="?attr/colorPrimary"
             android:text="@string/menu_button1"
             android:textColor="?attr/colorOnPrimary" />
@@ -30,24 +28,22 @@
             android:id="@+id/button2"
             style="@style/Widget.Material3.Button"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
+            android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
-            android:layout_weight="12"
             android:backgroundTint="?attr/colorPrimary"
             android:text="@string/menu_button2"
             android:textColor="?attr/colorOnPrimary" />
 
-        <View
+        <Space
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="60" />
+            android:layout_weight="1" />
 
         <dev.themajorones.remotemanager.utils.button.VerticalMaterialButton
             android:id="@+id/settingsButton"
             style="@style/Widget.Material3.Button"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="16"
+            android:layout_height="wrap_content"
             android:backgroundTint="?attr/colorPrimary"
             android:text="@string/menu_settings"
             android:textColor="?attr/colorOnPrimary" />

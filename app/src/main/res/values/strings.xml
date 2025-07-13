@@ -1,5 +1,6 @@
 <resources>
     <string name="app_name">Remote Manager</string>
+    <string name="device_manager">Device Manager</string>
     <string name="device_info">DeviceInfo</string>
     <string name="button1">Wake On Lan</string>
     <string name="button2">Shutdown</string>
@@ -26,7 +27,7 @@
     <string name="name">Name</string>
     <string name="enter_name">Enter Device Name</string>
     <string name="delete">Delete</string>
-    <string name="menu_button1">Button 1</string>
-    <string name="menu_button2">Button 2</string>
+    <string name="menu_button1">Device Manager</string>
+    <string name="menu_button2">Device Hierarchy</string>
     <string name="menu_settings">Settings</string>
 </resources>
