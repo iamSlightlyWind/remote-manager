@@ -3,14 +3,10 @@ package dev.themajorones.remotemanager.fragment;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
-
 import androidx.fragment.app.Fragment;
 import androidx.annotation.NonNull;
-
 import com.google.android.material.textfield.TextInputEditText;
-
 import java.util.Objects;
-
 import dev.themajorones.remotemanager.R;
 import dev.themajorones.remotemanager.entity.Device;
 import dev.themajorones.remotemanager.entity.SecureShell;

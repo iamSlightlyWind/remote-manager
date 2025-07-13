@@ -10,12 +10,10 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import android.widget.ArrayAdapter;
-
 import dev.themajorones.remotemanager.MainActivity;
 import dev.themajorones.remotemanager.R;
 import dev.themajorones.remotemanager.entity.Device;
 import dev.themajorones.remotemanager.utils.DeviceUtils;
-
 import java.util.List;
 
 public class DeviceItemAdapter extends ArrayAdapter<Device> {

@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.util.Log;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -36,9 +37,8 @@ public class MainActivity extends AppCompatActivity {
         Preload.load(this);
         setContentView(R.layout.activity_main);
 
-        ViewUtils.replaceElement(findViewById(R.id.mainContent), R.layout.detail_list);
+        onPressDeviceManagerButton();
         setupButtonTriggers(savedInstanceState);
-        handler.post(deviceListUpdater);
     }
 
     private void setupButtonTriggers(Bundle savedInstanceState) {
@@ -46,20 +46,20 @@ public class MainActivity extends AppCompatActivity {
         addDeviceButton.setOnClickListener(v -> spawnAddDeviceFragment());
         addDeviceButton.setOnLongClickListener( v -> DataLoader.loadData());
 
-        Button button1 = findViewById(R.id.button1);
-        if (button1 instanceof VerticalMaterialButton) {
-            VerticalMaterialButton vButton1 = (VerticalMaterialButton) button1;
-            vButton1.setOnClickListener(v -> ViewUtils.notify("Button 1 clicked"));
-        } else if (button1 != null) {
-            button1.setOnClickListener(v -> ViewUtils.notify("Button 1 clicked"));
+        Button deviceManagerButton = findViewById(R.id.button1);
+        if (deviceManagerButton instanceof VerticalMaterialButton) {
+            VerticalMaterialButton vButton1 = (VerticalMaterialButton) deviceManagerButton;
+            vButton1.setOnClickListener(v -> onPressDeviceManagerButton());
+        } else if (deviceManagerButton != null) {
+            deviceManagerButton.setOnClickListener(v -> onPressDeviceManagerButton());
         }
 
-        Button button2 = findViewById(R.id.button2);
-        if (button2 instanceof VerticalMaterialButton) {
-            VerticalMaterialButton vButton2 = (VerticalMaterialButton) button2;
-            vButton2.setOnClickListener(v -> ViewUtils.notify("Button 2 clicked"));
-        } else if (button2 != null) {
-            button2.setOnClickListener(v -> ViewUtils.notify("Button 2 clicked"));
+        Button deviceHierarchyButton = findViewById(R.id.button2);
+        if (deviceHierarchyButton instanceof VerticalMaterialButton) {
+            VerticalMaterialButton vButton2 = (VerticalMaterialButton) deviceHierarchyButton;
+            vButton2.setOnClickListener(v -> onPressDeviceHierarchyButton());
+        } else if (deviceHierarchyButton != null) {
+            deviceHierarchyButton.setOnClickListener(v -> onPressDeviceHierarchyButton());
         }
         
         Button settingsButton = findViewById(R.id.settingsButton);
@@ -71,18 +71,6 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public void spawnAddDeviceFragment() {
-        ViewUtils.replaceFragment(this, R.id.detailPane, new AddDeviceFragment());
-    }
-
-    private final Runnable deviceListUpdater = new Runnable() {
-        @Override
-        public void run() {
-            fillDeviceList();
-            handler.postDelayed(this, 250);
-        }
-    };
-
     private void fillDeviceList() {
         ListView listView = findViewById(R.id.listView);
         List<Device> devices = PersistentStorageService.get().findAll();
@@ -92,5 +80,27 @@ public class MainActivity extends AppCompatActivity {
             DeviceItemAdapter adapter = new DeviceItemAdapter(this, currentDevices);
             ViewUtils.fillListView(listView, adapter);
         }
+    }
+
+    private final Runnable deviceListUpdater = new Runnable() {
+        @Override
+        public void run() {
+            fillDeviceList();
+            handler.postDelayed(this, 1000);
+        }
+    };
+
+    private void onPressDeviceManagerButton() {
+        currentDevices = new ArrayList<>();
+        ViewUtils.replaceElement(findViewById(R.id.mainContent), R.layout.device_manager);
+        handler.post(deviceListUpdater);
+    }
+
+    private void onPressDeviceHierarchyButton() {
+        ViewUtils.replaceElement(findViewById(R.id.mainContent), R.layout.device_hierarchy);
+    }
+
+    public void spawnAddDeviceFragment() {
+        ViewUtils.replaceFragment(this, R.id.detailPane, new AddDeviceFragment());
     }
 }
