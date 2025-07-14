@@ -1,6 +1,8 @@
 package dev.themajorones.remotemanager.fragment;
 
 import android.content.Context;
+import android.os.Handler;
+import android.os.Looper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +19,7 @@ import dev.themajorones.remotemanager.MainActivity;
 import dev.themajorones.remotemanager.R;
 import dev.themajorones.remotemanager.entity.Device;
 import dev.themajorones.remotemanager.utils.DeviceUtils;
+import dev.themajorones.remotemanager.utils.ViewUtils;
 
 import java.util.List;
 import java.util.Objects;
@@ -59,12 +62,22 @@ public class DeviceItemAdapter extends ArrayAdapter<Device> {
         }
 
         convertView.setOnClickListener(v -> {
-            AddDeviceFragment adf = AddDeviceFragment.getInstance();
-            if (adf == null) {
-                activity.spawnAddDeviceFragment();
-                adf = AddDeviceFragment.getInstance();
+            try{
+                AddDeviceFragment adf = AddDeviceFragment.getInstance();
+                if (adf == null) {
+                    activity.spawnAddDeviceFragment();
+                    new Handler(Looper.getMainLooper()).postDelayed(() -> {
+                        AddDeviceFragment delayedAdf = AddDeviceFragment.getInstance();
+                        if (delayedAdf != null) {
+                            delayedAdf.editDevice(Objects.requireNonNull(device));
+                        }
+                    }, 250);
+                } else {
+                    adf.editDevice(Objects.requireNonNull(device));
+                }
+            } catch (Exception e) {
+                ViewUtils.throwNotify("Failed: ", e);
             }
-            adf.editDevice(Objects.requireNonNull(device));
         });
 
 

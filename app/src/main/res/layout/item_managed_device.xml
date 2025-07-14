@@ -11,7 +11,7 @@
         android:layout_width="32dp"
         android:layout_height="32dp"
         android:src="@android:drawable/ic_menu_manage"
-        android:contentDescription="Managed Device Icon" />
+        android:contentDescription="@string/desc_managed_device_icon" />
 
     <TextView
         android:id="@+id/tvManagedDeviceName"
@@ -20,27 +20,27 @@
         android:layout_weight="1"
         android:layout_marginStart="12dp"
         android:layout_gravity="center_vertical"
-        android:text="Managed Device Name"
+        android:text="@string/item_managed_device_default_name"
         android:textSize="16sp" />
 
     <Button
         android:id="@+id/btnBoot"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Boot"
+        android:text="@string/button_boot"
         android:layout_marginEnd="4dp" />
 
     <Button
         android:id="@+id/btnShutdown"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Shutdown"
+        android:text="@string/button_shutdown"
         android:layout_marginEnd="4dp" />
 
     <Button
         android:id="@+id/btnRemove"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Remove" />
+        android:text="@string/button_remove" />
 
 </LinearLayout>

@@ -10,6 +10,7 @@ import androidx.core.view.WindowCompat;
 
 import com.google.android.material.color.DynamicColors;
 
+import dev.themajorones.remotemanager.fragment.SettingsFragment;
 import dev.themajorones.remotemanager.service.PersistentStorageService;
 import lombok.Getter;
 

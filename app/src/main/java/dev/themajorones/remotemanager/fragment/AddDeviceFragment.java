@@ -43,6 +43,10 @@ public class AddDeviceFragment extends Fragment {
         return savedInstance;
     }
 
+    public static void removeInstance() {
+        savedInstance = null;
+    }
+
     @Override
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         nameInput = view.findViewById(R.id.name_input);

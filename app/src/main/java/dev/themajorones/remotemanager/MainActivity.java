@@ -4,12 +4,14 @@ import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
 import androidx.window.layout.FoldingFeature;
 
 import java.util.ArrayList;
@@ -19,6 +21,7 @@ import dev.themajorones.remotemanager.fragment.AddDeviceFragment;
 import dev.themajorones.remotemanager.entity.Device;
 import dev.themajorones.remotemanager.fragment.DeviceItemAdapter;
 import dev.themajorones.remotemanager.fragment.ManagingDeviceAdapter;
+import dev.themajorones.remotemanager.fragment.SettingsFragment;
 import dev.themajorones.remotemanager.service.PersistentStorageService;
 import dev.themajorones.remotemanager.service.development.DataLoader;
 import dev.themajorones.remotemanager.utils.Preload;
@@ -36,6 +39,8 @@ public class MainActivity extends AppCompatActivity {
     @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        SettingsFragment.applyLanguageSettings(this);
+        SettingsFragment.applyThemeSettings(this);
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         Preload.load(this);
@@ -62,10 +67,17 @@ public class MainActivity extends AppCompatActivity {
 
         Button settingsButton = findViewById(R.id.settingsButton);
         if (settingsButton instanceof VerticalMaterialButton vSettingsButton) {
-            vSettingsButton.setOnClickListener(v -> ViewUtils.notify("Settings button clicked"));
+            vSettingsButton.setOnClickListener(v -> onPressSettingsButton());
         } else if (settingsButton != null) {
-            settingsButton.setOnClickListener(v -> ViewUtils.notify("Settings button clicked"));
+            settingsButton.setOnClickListener(v -> onPressSettingsButton());
         }
+    }
+
+    private void onPressSettingsButton() {
+        handler.removeCallbacks(deviceListUpdater);
+        handler.removeCallbacks(managingDeviceListUpdater);
+        preChangeTab();
+        ViewUtils.replaceFragment(this, R.id.mainContent, new SettingsFragment());
     }
 
     private void setupDeviceManagerButtonTriggers(Bundle savedInstanceState) {
@@ -93,12 +105,22 @@ public class MainActivity extends AppCompatActivity {
         }
     };
 
+    private void preChangeTab(){
+        ((ViewGroup) findViewById(R.id.mainContent)).removeAllViews();
+        AddDeviceFragment.removeInstance();
+    }
+
     private void onPressDeviceHierarchyButton() {
-        handler.removeCallbacks(deviceListUpdater);   // stop device list updates
+        handler.removeCallbacks(deviceListUpdater);
+        preChangeTab();
         currentManagingDevices = new ArrayList<>();
+
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.mainContent, new Fragment())
+                .commitNow();
+        
         ViewUtils.replaceElement(findViewById(R.id.mainContent), R.layout.device_hierarchy);
         handler.post(managingDeviceListUpdater);
-        // TODO: setup button triggers if any
     }
 
     public void spawnAddDeviceFragment() {
@@ -106,8 +128,14 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void onPressDeviceManagerButton() {
-        handler.removeCallbacks(managingDeviceListUpdater);  // stop managing list updates
+        handler.removeCallbacks(managingDeviceListUpdater);
+        preChangeTab();
         currentDevices = new ArrayList<>();
+
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.mainContent, new Fragment())
+                .commitNow();
+                
         ViewUtils.replaceElement(findViewById(R.id.mainContent), R.layout.device_manager);
         handler.post(deviceListUpdater);
         setupDeviceManagerButtonTriggers(this.getIntent().getExtras());

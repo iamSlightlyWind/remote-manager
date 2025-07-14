@@ -53,7 +53,7 @@ public class ViewUtils {
             host.getSupportFragmentManager()
                     .beginTransaction()
                     .replace(containerId, frag)
-                    .commitNow();
+                    .commit(); // Use commit() instead of commitNow() for better performance
         } catch (Exception e) {
             throwNotify("Failed to replace fragment: ", e);
         }
