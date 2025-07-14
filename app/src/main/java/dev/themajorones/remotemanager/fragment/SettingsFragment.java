@@ -1,8 +1,10 @@
 package dev.themajorones.remotemanager.fragment;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -33,6 +35,8 @@ public class SettingsFragment extends Fragment {
 
     private AutoCompleteTextView themeDropdown;
     private MaterialButtonToggleGroup languageToggleGroup;
+    private MaterialButton buttonEmail;
+    private MaterialButton buttonGitHub;
     private boolean isLoadingSettings = false;
 
     private static SettingsFragment savedInstance;
@@ -53,6 +57,7 @@ public class SettingsFragment extends Fragment {
         setupThemeDropdown();
         loadSettings();
         setupLanguageToggle();
+        setupCreditButtons();
 
         savedInstance = this;
     }
@@ -62,6 +67,8 @@ public class SettingsFragment extends Fragment {
         languageToggleGroup = view.findViewById(R.id.language_toggle_group);
         MaterialButton buttonEnglish = view.findViewById(R.id.button_english);
         MaterialButton buttonVietnamese = view.findViewById(R.id.button_vietnamese);
+        buttonEmail = view.findViewById(R.id.button_email);
+        buttonGitHub = view.findViewById(R.id.button_github);
     }
 
     private void setupThemeDropdown() {
@@ -246,6 +253,45 @@ public class SettingsFragment extends Fragment {
                 }
             }
         });
+    }
+
+    private void setupCreditButtons() {
+        buttonEmail.setOnClickListener(v -> openEmailApp());
+        buttonGitHub.setOnClickListener(v -> openGitHubRepo());
+    }
+
+    private void openEmailApp() {
+        try {
+            Intent emailIntent = new Intent(Intent.ACTION_SENDTO);
+            emailIntent.setData(Uri.parse("mailto:"));
+            String[] recipients = new String[] { "iam.slightlywind@themajorones.dev" };
+            emailIntent.putExtra(Intent.EXTRA_EMAIL, recipients);
+            emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Remote Manager App Feedback");
+
+            Intent chooser = Intent.createChooser(emailIntent, "Send feedback via");
+            if (emailIntent.resolveActivity(requireActivity().getPackageManager()) != null) {
+                startActivity(chooser);
+            } else {
+                ViewUtils.notify("No email app found");
+            }
+        } catch (Exception e) {
+            ViewUtils.throwNotify("Failed to open email app: ", e);
+        }
+    }
+
+    private void openGitHubRepo() {
+        try {
+            Uri uri = Uri.parse("https://github.com/iamSlightlyWind");
+            Intent browserIntent = new Intent(Intent.ACTION_VIEW, uri);
+
+            if (browserIntent.resolveActivity(requireActivity().getPackageManager()) != null) {
+                startActivity(browserIntent);
+            } else {
+                ViewUtils.notify("No browser app found");
+            }
+        } catch (Exception e) {
+            ViewUtils.throwNotify("Failed to open GitHub repository: ", e);
+        }
     }
 
     public static void applyLanguageSettings(Context context) {

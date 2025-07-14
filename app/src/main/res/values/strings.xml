@@ -47,4 +47,9 @@
     <string name="theme_system">System</string>
     <string name="language_english">English</string>
     <string name="language_vietnamese">Vietnamese</string>
+    <string name="credits">Credits</string>
+    <string name="developer">iamSlightlyWind</string>
+    <string name="email_developer">Send me a cat picture</string>
+    <string name="view_source">Source Code</string>
+    <string name="github_repo">GitHub Repository</string>
 </resources>
