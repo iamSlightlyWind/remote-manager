@@ -36,8 +36,14 @@ public class PersistentStorageService {
         @Delete
         void delete(Device device);
 
+        @Query("DELETE FROM Device WHERE id = :id")
+        void deleteById(Long id);
+
         @Query("DELETE FROM Device WHERE name = :name")
         void deleteByName(String name);
+
+        @Query("SELECT * FROM Device WHERE id = :id LIMIT 1")
+        Device findById(Long id);
 
         @Query("SELECT * FROM Device WHERE name = :name LIMIT 1")
         Device findByName(String name);
@@ -55,7 +61,7 @@ public class PersistentStorageService {
         void deleteAll();
     }
 
-    @Database(entities = {Device.class}, version = 3, exportSchema = false)
+    @Database(entities = {Device.class}, version = 4, exportSchema = false)
     abstract static class AppDatabase extends RoomDatabase {
         abstract DeviceDao deviceDao();
 
@@ -160,7 +166,7 @@ public class PersistentStorageService {
     }
 
     public static List<Device> getRemainingManagedDevices(Device managingDevice) {
-        managingDevice = get().findByName(managingDevice.getName());
+        managingDevice = get().findById(managingDevice.getId());
         if (managingDevice == null) {
             return new ArrayList<>();
         }
@@ -236,6 +242,17 @@ public class PersistentStorageService {
         }
     }
 
+    public void deleteById(Long id) {
+        try {
+            executor.submit(() -> {
+                dao.deleteById(id);
+                return null;
+            }).get();
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to delete device by id", e);
+        }
+    }
+
     public void deleteByName(String name) {
         try {
             executor.submit(() -> {
@@ -244,6 +261,14 @@ public class PersistentStorageService {
             }).get();
         } catch (Exception e) {
             throw new RuntimeException("Failed to delete device by name", e);
+        }
+    }
+
+    public Device findById(Long id) {
+        try {
+            return executor.submit(() -> dao.findById(id)).get();
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to find device by id", e);
         }
     }
 
@@ -257,7 +282,7 @@ public class PersistentStorageService {
 
     public List<Device> findAll() {
         try {
-            return executor.submit(dao::findAll).get();
+            return executor.submit(() -> dao.findAll()).get();
         } catch (Exception e) {
             throw new RuntimeException("Failed to find devices", e);
         }
@@ -273,7 +298,7 @@ public class PersistentStorageService {
 
     public int count() {
         try {
-            return executor.submit(dao::count).get();
+            return executor.submit(() -> dao.count()).get();
         } catch (Exception e) {
             throw new RuntimeException("Failed to count devices", e);
         }

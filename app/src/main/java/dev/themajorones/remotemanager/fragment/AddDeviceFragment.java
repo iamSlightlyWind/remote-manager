@@ -91,24 +91,24 @@ public class AddDeviceFragment extends Fragment {
     }
 
     private void onDeleteButtonClick() {
-        String deviceName = Objects.requireNonNull(nameInput.getText()).toString();
-        Device device = PersistentStorageService.get().findByName(deviceName);
-        List<Device> managedDevices;
-
-        if (device != null) {
-            managedDevices = PersistentStorageService.get().findManagedDevices(device);
-
-            PersistentStorageService.get().delete(device);
-            ViewUtils.notify("Device deleted successfully");
-            onResetButtonClick();
-        } else {
-            managedDevices = PersistentStorageService.get().findManagedDevices(savedDevice);
-            PersistentStorageService.get().delete(savedDevice);
+        Device deviceToDelete = savedDevice;
+        if (deviceToDelete == null) {
+            ViewUtils.notify("No device selected for deletion");
+            return;
         }
 
-        for (Device managedDevice : managedDevices) {
-            managedDevice.removesManagingDevice(device);
-            PersistentStorageService.get().save(managedDevice);
+        List<Device> managedDevices;
+
+        if (deviceToDelete != null) {
+            managedDevices = PersistentStorageService.findManagedDevices(deviceToDelete);
+
+            PersistentStorageService.get().delete(deviceToDelete);
+            ViewUtils.notify("Device deleted successfully");
+
+            for (Device managedDevice : managedDevices) {
+                managedDevice.removesManagingDevice(deviceToDelete);
+                PersistentStorageService.get().save(managedDevice);
+            }
         }
 
         onResetButtonClick();
@@ -128,14 +128,6 @@ public class AddDeviceFragment extends Fragment {
                 return;
             }
 
-            if (savedDevice == null) {
-                Device existingDevice = PersistentStorageService.get().findByName(name);
-                if (existingDevice != null) {
-                    ViewUtils.notify("Device with this name already exists");
-                    return;
-                }
-            }
-
             host = Objects.requireNonNull(hostInput.getText()).toString();
             username = Objects.requireNonNull(usernameInput.getText()).toString();
             password = Objects.requireNonNull(passwordInput.getText()).toString();
@@ -150,21 +142,31 @@ public class AddDeviceFragment extends Fragment {
             return;
         }
 
-        Device newDevice = Device.builder()
-                .name(name)
-                .host(host)
-                .username(username)
-                .password(password)
-                .port(port)
-                .os(os)
-                .macAddress(macAddress)
-                .managingDevices(managingDevices)
-                .build();
+        Device newDevice;
 
         if (savedDevice != null) {
-            if (!newDevice.getName().equals(savedDevice.getName())) {
-                PersistentStorageService.get().delete(savedDevice);
-            }
+            newDevice = Device.builder()
+                    .id(savedDevice.getId())
+                    .name(name)
+                    .host(host)
+                    .username(username)
+                    .password(password)
+                    .port(port)
+                    .os(os)
+                    .macAddress(macAddress)
+                    .managingDevices(managingDevices)
+                    .build();
+        } else {
+            newDevice = Device.builder()
+                    .name(name)
+                    .host(host)
+                    .username(username)
+                    .password(password)
+                    .port(port)
+                    .os(os)
+                    .macAddress(macAddress)
+                    .managingDevices(managingDevices)
+                    .build();
         }
 
         newDevice = PersistentStorageService.get().save(newDevice);

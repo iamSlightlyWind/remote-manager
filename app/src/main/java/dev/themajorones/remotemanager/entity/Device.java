@@ -25,13 +25,16 @@ import lombok.Setter;
 @AllArgsConstructor
 public class Device {
 
-    @PrimaryKey
+    @PrimaryKey(autoGenerate = true)
+    public Long id;
+
     @NonNull
     public String name;
 
     public String os;
 
     @TypeConverters(DeviceListConverter.class)
+    @Builder.Default
     public List<Device> managingDevices = new ArrayList<>();
 
     public String host;
@@ -51,15 +54,21 @@ public class Device {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Device device = (Device) o;
-        return port == device.port &&
+        return java.util.Objects.equals(id, device.id) &&
                 java.util.Objects.equals(name, device.name) &&
                 java.util.Objects.equals(os, device.os) &&
+                java.util.Objects.equals(managingDevices, device.managingDevices) &&
                 java.util.Objects.equals(host, device.host) &&
                 java.util.Objects.equals(username, device.username) &&
                 java.util.Objects.equals(password, device.password) &&
+                port == device.port &&
                 java.util.Objects.equals(keyPath, device.keyPath) &&
-                java.util.Objects.equals(macAddress, device.macAddress) &&
-                java.util.Objects.equals(managingDevices, device.managingDevices);
+                java.util.Objects.equals(macAddress, device.macAddress);
+    }
+
+    @Override
+    public int hashCode() {
+        return java.util.Objects.hash(id);
     }
 
     public boolean isSshAble() {
