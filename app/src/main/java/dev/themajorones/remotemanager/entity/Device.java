@@ -74,9 +74,13 @@ public class Device {
             managingDevices = new ArrayList<>();
         }
 
-        if (!managingDevices.contains(device)) {
-            managingDevices.add(device);
-            return true;
+        try {
+            if (!managingDevices.contains(device)) {
+                managingDevices.add(device);
+                return true;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
         return false;

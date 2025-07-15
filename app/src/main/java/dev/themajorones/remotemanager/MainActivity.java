@@ -1,6 +1,9 @@
 package dev.themajorones.remotemanager;
 
+import static dev.themajorones.remotemanager.utils.DialogUtils.showDeviceChoiceDialog;
+
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -60,9 +63,9 @@ public class MainActivity extends AppCompatActivity {
 
         Button deviceHierarchyButton = findViewById(R.id.button2);
         if (deviceHierarchyButton instanceof VerticalMaterialButton vButton2) {
-            vButton2.setOnClickListener(v -> onPressDeviceHierarchyButton());
+            vButton2.setOnClickListener(v -> onPressDeviceHierarchyButton(this));
         } else if (deviceHierarchyButton != null) {
-            deviceHierarchyButton.setOnClickListener(v -> onPressDeviceHierarchyButton());
+            deviceHierarchyButton.setOnClickListener(v -> onPressDeviceHierarchyButton(this));
         }
 
         Button settingsButton = findViewById(R.id.settingsButton);
@@ -105,12 +108,12 @@ public class MainActivity extends AppCompatActivity {
         }
     };
 
-    private void preChangeTab(){
+    private void preChangeTab() {
         ((ViewGroup) findViewById(R.id.mainContent)).removeAllViews();
         AddDeviceFragment.removeInstance();
     }
 
-    private void onPressDeviceHierarchyButton() {
+    private void onPressDeviceHierarchyButton(Context context) {
         handler.removeCallbacks(deviceListUpdater);
         preChangeTab();
         ViewUtils.replaceElement(findViewById(R.id.mainContent), R.layout.device_hierarchy);
@@ -119,7 +122,12 @@ public class MainActivity extends AppCompatActivity {
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.mainContent, new Fragment())
                 .commitNow();
-        
+
+        Button addManagingDeviceButton = findViewById(R.id.addManagingDeviceButton);
+        addManagingDeviceButton.setOnClickListener(v ->
+                showDeviceChoiceDialog(this, PersistentStorageService.getRemainingManagingDevices(), selected -> {
+                    ViewUtils.notify("You chose: " + selected.getName());
+                }));
         handler.post(managingDeviceListUpdater);
     }
 
@@ -135,7 +143,7 @@ public class MainActivity extends AppCompatActivity {
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.mainContent, new Fragment())
                 .commitNow();
-                
+
         ViewUtils.replaceElement(findViewById(R.id.mainContent), R.layout.device_manager);
         handler.post(deviceListUpdater);
         setupDeviceManagerButtonTriggers(this.getIntent().getExtras());

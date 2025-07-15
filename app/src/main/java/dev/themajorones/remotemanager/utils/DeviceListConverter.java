@@ -1,10 +1,12 @@
 package dev.themajorones.remotemanager.utils;
 
 import androidx.room.TypeConverter;
+
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -20,8 +22,12 @@ public class DeviceListConverter {
 
     @TypeConverter
     public static List<Device> toDeviceList(String data) {
-        if (data == null) return Collections.emptyList();
-        Type listType = new TypeToken<List<Device>>() {}.getType();
-        return gson.fromJson(data, listType);
+        if (data == null) {
+            return new ArrayList<>();
+        }
+        Type listType = new TypeToken<List<Device>>() {
+        }.getType();
+        List<Device> tmp = gson.fromJson(data, listType);
+        return new ArrayList<>(tmp != null ? tmp : Collections.emptyList());
     }
 }

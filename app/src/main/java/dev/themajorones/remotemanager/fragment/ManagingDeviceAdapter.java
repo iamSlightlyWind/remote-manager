@@ -22,7 +22,9 @@ import java.util.List;
 import java.util.Objects;
 
 import dev.themajorones.remotemanager.R;
+import dev.themajorones.remotemanager.utils.DialogUtils;
 import dev.themajorones.remotemanager.utils.ViewUtils;
+
 import android.os.Handler;
 import android.os.Looper;
 
@@ -89,8 +91,13 @@ public class ManagingDeviceAdapter extends ArrayAdapter<Device> {
 
         holder.expander.setOnClickListener(toggleListener);
         holder.manageingDevice.setOnClickListener(toggleListener);
-        holder.addManagedDevice.setOnClickListener(v -> ViewUtils.notify("Add Managed Device pressed for " + device.getName()));
-
+        holder.addManagedDevice.setOnClickListener(v -> DialogUtils.showDeviceChoiceDialog(
+                getContext(),
+                PersistentStorageService.getRemainingManagedDevices(device),
+                selected -> {
+                    selected.addManagingDevice(device);
+                    PersistentStorageService.get().save(selected);
+                }));
         return convertView;
     }
 
