@@ -60,15 +60,6 @@ public class DataLoader {
                 .os("macOS")
                 .build();
 
-        bigscreen.addManagingDevice(asusRouter);
-        windstation.addManagingDevice(asusRouter);
-
-        macVM.addManagingDevice(asusRouter);
-        macVM.addManagingDevice(bigscreen);
-
-        gamingPC.addManagingDevice(ddManager);
-        macbook.addManagingDevice(ddManager);
-
         devices.add(bigscreen);
         devices.add(windstation);
         devices.add(macVM);
@@ -77,9 +68,47 @@ public class DataLoader {
         devices.add(macbook);
         devices.add(ddManager);
 
+        PersistentStorageService.get().saveAll(devices);
+
+        List<Device> savedDevices = PersistentStorageService.get().findAll();
+        Device savedBigscreen = findDeviceByName(savedDevices, "Bigscreen");
+        Device savedWindstation = findDeviceByName(savedDevices, "Windstation");
+        Device savedMacVM = findDeviceByName(savedDevices, "Mac VM");
+        Device savedAsusRouter = findDeviceByName(savedDevices, "ASUS Router");
+        Device savedGamingPC = findDeviceByName(savedDevices, "Gaming PC [DD]");
+        Device savedMacbook = findDeviceByName(savedDevices, "MacBook Pro [DD]");
+        Device savedDdManager = findDeviceByName(savedDevices, "DD Manager [DD]");
+        
+        savedBigscreen.addManagingDevice(savedAsusRouter);
+        savedWindstation.addManagingDevice(savedAsusRouter);
+
+        savedMacVM.addManagingDevice(savedAsusRouter);
+        savedMacVM.addManagingDevice(savedBigscreen);
+
+        savedGamingPC.addManagingDevice(savedDdManager);
+        savedMacbook.addManagingDevice(savedDdManager);
+
         ViewUtils.notify("DEBUG: Deleted all devices and added dummy devices");
 
-        PersistentStorageService.get().saveAll(devices);
+        List<Device> devicesWithRelationships = new ArrayList<>();
+        devicesWithRelationships.add(savedBigscreen);
+        devicesWithRelationships.add(savedWindstation);
+        devicesWithRelationships.add(savedMacVM);
+        devicesWithRelationships.add(savedAsusRouter);
+        devicesWithRelationships.add(savedGamingPC);
+        devicesWithRelationships.add(savedMacbook);
+        devicesWithRelationships.add(savedDdManager);
+        
+        PersistentStorageService.get().saveAll(devicesWithRelationships);
         return true;
+    }
+    
+    private static Device findDeviceByName(List<Device> devices, String name) {
+        for (Device device : devices) {
+            if (device.getName().equals(name)) {
+                return device;
+            }
+        }
+        return null;
     }
 }

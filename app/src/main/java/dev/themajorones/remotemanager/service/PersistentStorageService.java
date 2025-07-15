@@ -119,7 +119,14 @@ public class PersistentStorageService {
             }
 
             for (Device managingDevice : device.managingDevices) {
-                if (!managingDevices.contains(managingDevice)) {
+                boolean alreadyAdded = false;
+                for (Device existing : managingDevices) {
+                    if (existing.getId() != null && existing.getId().equals(managingDevice.getId())) {
+                        alreadyAdded = true;
+                        break;
+                    }
+                }
+                if (!alreadyAdded) {
                     managingDevices.add(managingDevice);
                 }
             }
@@ -134,11 +141,16 @@ public class PersistentStorageService {
     }
 
     public static List<Device> findManagedDevices(Device device) {
-        List<Device> devices = get().findAll();
+        List<Device> allDevices = get().findAll();
         List<Device> managedDevices = new ArrayList<>();
-        for (Device d : devices) {
-            if (d.managingDevices.contains(device)) {
-                managedDevices.add(d);
+        for (Device d : allDevices) {
+            if (d.managingDevices != null) {
+                for (Device managingDevice : d.managingDevices) {
+                    if (managingDevice.getId() != null && managingDevice.getId().equals(device.getId())) {
+                        managedDevices.add(d);
+                        break;
+                    }
+                }
             }
         }
         return managedDevices;
@@ -166,23 +178,23 @@ public class PersistentStorageService {
     }
 
     public static List<Device> getRemainingManagedDevices(Device managingDevice) {
-        managingDevice = get().findById(managingDevice.getId());
-        if (managingDevice == null) {
+        Device freshManagingDevice = get().findById(managingDevice.getId());
+        if (freshManagingDevice == null) {
             return new ArrayList<>();
         }
         
-        List<Device> devices = get().findAll();
-        List<Device> managedDevices = findManagedDevices(managingDevice);
+        List<Device> allDevices = get().findAll();
+        List<Device> managedDevices = findManagedDevices(freshManagingDevice);
         List<Device> remainingManagedDevices = new ArrayList<>();
 
-        for (Device device : devices) {
-            if (device.equals(managingDevice)) {
+        for (Device device : allDevices) {
+            if (device.getId().equals(freshManagingDevice.getId())) {
                 continue;
             }
             
             boolean alreadyManaged = false;
             for (Device managedDevice : managedDevices) {
-                if (managedDevice.equals(device)) {
+                if (managedDevice.getId().equals(device.getId())) {
                     alreadyManaged = true;
                     break;
                 }
