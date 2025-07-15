@@ -62,7 +62,9 @@ public class DataLoader {
 
         bigscreen.addManagingDevice(asusRouter);
         windstation.addManagingDevice(asusRouter);
+
         macVM.addManagingDevice(asusRouter);
+        macVM.addManagingDevice(bigscreen);
 
         gamingPC.addManagingDevice(ddManager);
         macbook.addManagingDevice(ddManager);

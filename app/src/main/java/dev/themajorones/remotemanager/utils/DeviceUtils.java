@@ -43,6 +43,22 @@ public class DeviceUtils {
         }
     }
 
+    private static String runNestedCommandOnDevice(Device managingDevice, Device managedDevice, String command) {
+        try {
+            return SSHService.runNestedCommand(managingDevice, managedDevice, command.trim());
+        } catch (Exception e) {
+            if (!(e instanceof ExecutionException)) {
+                ViewUtils.throwNotify("Failed: ", e);
+            }
+            return "";
+        }
+    }
+
+    public static void shutdownManagedDevice(Device managingDevice, Device managedDevice) {
+        String command = "sudo shutdown -h now";
+        runNestedCommandOnDevice(managingDevice, managedDevice, command);
+    }
+
     public static void shutdownUnix(Device device) {
         String command = "sudo shutdown -h now";
         runCommandOnDevice(device, command);
@@ -132,8 +148,14 @@ public class DeviceUtils {
 
     public static void wakeOnLanLocally(Device device) {
         String macAddress = device.getMacAddress();
-        if (macAddress == null || macAddress.isEmpty()) {
+        if (macAddress == null || macAddress.isEmpty() || macAddress.equals("Can't determine MAC address")) {
             ViewUtils.notify("MAC address is required for Wake on LAN");
+            return;
+        }
+
+        Pattern macPattern = Pattern.compile("^(?:[0-9A-Fa-f]{2}:){5}[0-9A-Fa-f]{2}$");
+        if (!macPattern.matcher(macAddress).matches()) {
+            ViewUtils.notify("Invalid MAC address format");
             return;
         }
         WakeOnLanUtils.wake(macAddress);

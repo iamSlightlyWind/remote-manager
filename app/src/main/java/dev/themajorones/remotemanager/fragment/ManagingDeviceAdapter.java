@@ -28,9 +28,9 @@ import android.os.Looper;
 
 public class ManagingDeviceAdapter extends ArrayAdapter<Device> {
     private final LayoutInflater inflater;
-    private List<Device> savedDevices = new ArrayList<>();
     private Device thisDevice;
     private final Handler handler = new Handler(Looper.getMainLooper());
+
     private final Runnable updateChecker = new Runnable() {
         @Override
         public void run() {
@@ -110,15 +110,21 @@ public class ManagingDeviceAdapter extends ArrayAdapter<Device> {
         handler.removeCallbacks(updateChecker);
     }
 
-    private void checkForUpdates() {
-        for (int i = 0; i < getCount(); i++) {
-            Device device = getItem(i);
-            if (device != null) {
-                List<Device> currentManagedDevices = PersistentStorageService.findManagedDevices(device);
+    private void checkForUpdates() { // TODO: fix this method to properly check for updates
+        // to update list of managing devices, get PersistentStorageService.findAllManagingDevices()
+        // to update list of managed devices, get PersistentStorageService.findManagedDevices(managingDevice)
 
-                updateDeviceAtPosition(i, currentManagedDevices);
+        //use similar logic as this:
+        /* private void fillManagingDeviceList() {
+            List<Device> managingDevices = PersistentStorageService.get().findAllManagingDevices();
+            ListView listView = findViewById(R.id.listView);
+
+            if (!managingDevices.equals(currentManagingDevices)) {
+                currentManagingDevices = managingDevices;
+                ManagingDeviceAdapter adapter = new ManagingDeviceAdapter(this, currentManagingDevices);
+                ViewUtils.fillListView(listView, adapter);
             }
-        }
+        } */
     }
 
     private void updateDeviceAtPosition(int position, List<Device> newManagedDevices) {
