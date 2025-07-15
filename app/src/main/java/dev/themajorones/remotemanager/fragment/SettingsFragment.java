@@ -28,7 +28,6 @@ public class SettingsFragment extends Fragment {
     private static final String PREF_LANGUAGE = "language";
     private static final String PREF_THEME = "theme";
 
-    // Theme keys for storage
     private static final String THEME_KEY_LIGHT = "light";
     private static final String THEME_KEY_DARK = "dark";
     private static final String THEME_KEY_SYSTEM = "system";
@@ -85,7 +84,6 @@ public class SettingsFragment extends Fragment {
 
         themeDropdown.setAdapter(adapter);
 
-        // Set dropdown text based on saved theme key
         String savedThemeKey = getThemePreference();
         themeDropdown.setText(getThemeDisplayName(savedThemeKey), false);
 

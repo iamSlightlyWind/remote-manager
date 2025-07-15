@@ -36,8 +36,14 @@ public class PersistentStorageService {
         @Delete
         void delete(Device device);
 
+        @Query("DELETE FROM Device WHERE id = :id")
+        void deleteById(Long id);
+
         @Query("DELETE FROM Device WHERE name = :name")
         void deleteByName(String name);
+
+        @Query("SELECT * FROM Device WHERE id = :id LIMIT 1")
+        Device findById(Long id);
 
         @Query("SELECT * FROM Device WHERE name = :name LIMIT 1")
         Device findByName(String name);
@@ -55,7 +61,7 @@ public class PersistentStorageService {
         void deleteAll();
     }
 
-    @Database(entities = {Device.class}, version = 3, exportSchema = false)
+    @Database(entities = {Device.class}, version = 4, exportSchema = false)
     abstract static class AppDatabase extends RoomDatabase {
         abstract DeviceDao deviceDao();
 
@@ -113,7 +119,14 @@ public class PersistentStorageService {
             }
 
             for (Device managingDevice : device.managingDevices) {
-                if (!managingDevices.contains(managingDevice)) {
+                boolean alreadyAdded = false;
+                for (Device existing : managingDevices) {
+                    if (existing.getId() != null && existing.getId().equals(managingDevice.getId())) {
+                        alreadyAdded = true;
+                        break;
+                    }
+                }
+                if (!alreadyAdded) {
                     managingDevices.add(managingDevice);
                 }
             }
@@ -128,11 +141,16 @@ public class PersistentStorageService {
     }
 
     public static List<Device> findManagedDevices(Device device) {
-        List<Device> devices = get().findAll();
+        List<Device> allDevices = get().findAll();
         List<Device> managedDevices = new ArrayList<>();
-        for (Device d : devices) {
-            if (d.managingDevices.contains(device)) {
-                managedDevices.add(d);
+        for (Device d : allDevices) {
+            if (d.managingDevices != null) {
+                for (Device managingDevice : d.managingDevices) {
+                    if (managingDevice.getId() != null && managingDevice.getId().equals(device.getId())) {
+                        managedDevices.add(d);
+                        break;
+                    }
+                }
             }
         }
         return managedDevices;
@@ -160,23 +178,23 @@ public class PersistentStorageService {
     }
 
     public static List<Device> getRemainingManagedDevices(Device managingDevice) {
-        managingDevice = get().findByName(managingDevice.getName());
-        if (managingDevice == null) {
+        Device freshManagingDevice = get().findById(managingDevice.getId());
+        if (freshManagingDevice == null) {
             return new ArrayList<>();
         }
         
-        List<Device> devices = get().findAll();
-        List<Device> managedDevices = findManagedDevices(managingDevice);
+        List<Device> allDevices = get().findAll();
+        List<Device> managedDevices = findManagedDevices(freshManagingDevice);
         List<Device> remainingManagedDevices = new ArrayList<>();
 
-        for (Device device : devices) {
-            if (device.equals(managingDevice)) {
+        for (Device device : allDevices) {
+            if (device.getId().equals(freshManagingDevice.getId())) {
                 continue;
             }
             
             boolean alreadyManaged = false;
             for (Device managedDevice : managedDevices) {
-                if (managedDevice.equals(device)) {
+                if (managedDevice.getId().equals(device.getId())) {
                     alreadyManaged = true;
                     break;
                 }
@@ -236,6 +254,17 @@ public class PersistentStorageService {
         }
     }
 
+    public void deleteById(Long id) {
+        try {
+            executor.submit(() -> {
+                dao.deleteById(id);
+                return null;
+            }).get();
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to delete device by id", e);
+        }
+    }
+
     public void deleteByName(String name) {
         try {
             executor.submit(() -> {
@@ -244,6 +273,14 @@ public class PersistentStorageService {
             }).get();
         } catch (Exception e) {
             throw new RuntimeException("Failed to delete device by name", e);
+        }
+    }
+
+    public Device findById(Long id) {
+        try {
+            return executor.submit(() -> dao.findById(id)).get();
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to find device by id", e);
         }
     }
 
@@ -257,7 +294,7 @@ public class PersistentStorageService {
 
     public List<Device> findAll() {
         try {
-            return executor.submit(dao::findAll).get();
+            return executor.submit(() -> dao.findAll()).get();
         } catch (Exception e) {
             throw new RuntimeException("Failed to find devices", e);
         }
@@ -273,7 +310,7 @@ public class PersistentStorageService {
 
     public int count() {
         try {
-            return executor.submit(dao::count).get();
+            return executor.submit(() -> dao.count()).get();
         } catch (Exception e) {
             throw new RuntimeException("Failed to count devices", e);
         }
