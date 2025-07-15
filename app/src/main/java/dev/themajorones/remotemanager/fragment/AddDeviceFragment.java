@@ -116,7 +116,7 @@ public class AddDeviceFragment extends Fragment {
 
     private void onSaveButtonClick() {
         String name, host, username, password, os, macAddress;
-        List<Device> managedDevices = PersistentStorageService.get().findManagedDevices(savedDevice);
+        List<Device> managedDevices = savedDevice != null ? PersistentStorageService.findManagedDevices(savedDevice) : new ArrayList<>();
         List<Device> managingDevices = savedDevice != null ? savedDevice.getManagingDevices() : new ArrayList<>();
         int port;
 
@@ -167,13 +167,13 @@ public class AddDeviceFragment extends Fragment {
             }
         }
 
+        newDevice = PersistentStorageService.get().save(newDevice);
+
         for (Device managedDevice : managedDevices) {
             managedDevice.removesManagingDevice(savedDevice);
             managedDevice.addManagingDevice(newDevice);
             PersistentStorageService.get().save(managedDevice);
         }
-
-        newDevice = PersistentStorageService.get().save(newDevice);
 
         if (newDevice != null) {
             ViewUtils.notify("Device saved successfully");

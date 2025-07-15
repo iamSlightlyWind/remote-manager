@@ -32,7 +32,7 @@ public class Device {
     public String os;
 
     @TypeConverters(DeviceListConverter.class)
-    public List<Device> managingDevices;
+    public List<Device> managingDevices = new ArrayList<>();
 
     public String host;
 

@@ -113,13 +113,13 @@ public class MainActivity extends AppCompatActivity {
     private void onPressDeviceHierarchyButton() {
         handler.removeCallbacks(deviceListUpdater);
         preChangeTab();
+        ViewUtils.replaceElement(findViewById(R.id.mainContent), R.layout.device_hierarchy);
         currentManagingDevices = new ArrayList<>();
 
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.mainContent, new Fragment())
                 .commitNow();
         
-        ViewUtils.replaceElement(findViewById(R.id.mainContent), R.layout.device_hierarchy);
         handler.post(managingDeviceListUpdater);
     }
 

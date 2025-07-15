@@ -110,21 +110,15 @@ public class ManagingDeviceAdapter extends ArrayAdapter<Device> {
         handler.removeCallbacks(updateChecker);
     }
 
-    private void checkForUpdates() { // TODO: fix this method to properly check for updates
-        // to update list of managing devices, get PersistentStorageService.findAllManagingDevices()
-        // to update list of managed devices, get PersistentStorageService.findManagedDevices(managingDevice)
+    private void checkForUpdates() {
+        for (int i = 0; i < getCount(); i++) {
+            Device device = getItem(i);
+            if (device != null) {
+                List<Device> currentManagedDevices = PersistentStorageService.findManagedDevices(device);
 
-        //use similar logic as this:
-        /* private void fillManagingDeviceList() {
-            List<Device> managingDevices = PersistentStorageService.get().findAllManagingDevices();
-            ListView listView = findViewById(R.id.listView);
-
-            if (!managingDevices.equals(currentManagingDevices)) {
-                currentManagingDevices = managingDevices;
-                ManagingDeviceAdapter adapter = new ManagingDeviceAdapter(this, currentManagingDevices);
-                ViewUtils.fillListView(listView, adapter);
+                updateDeviceAtPosition(i, currentManagedDevices);
             }
-        } */
+        }
     }
 
     private void updateDeviceAtPosition(int position, List<Device> newManagedDevices) {

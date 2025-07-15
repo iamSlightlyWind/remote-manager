@@ -131,7 +131,7 @@ public class PersistentStorageService {
         List<Device> devices = get().findAll();
         List<Device> managedDevices = new ArrayList<>();
         for (Device d : devices) {
-            if (d.managingDevices != null && d.managingDevices.contains(device)) {
+            if (d.managingDevices.contains(device)) {
                 managedDevices.add(d);
             }
         }
