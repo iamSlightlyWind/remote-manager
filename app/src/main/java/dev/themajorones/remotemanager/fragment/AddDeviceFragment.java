@@ -15,9 +15,7 @@ import java.util.Objects;
 
 import dev.themajorones.remotemanager.R;
 import dev.themajorones.remotemanager.entity.Device;
-import dev.themajorones.remotemanager.entity.SecureShell;
 import dev.themajorones.remotemanager.service.PersistentStorageService;
-import dev.themajorones.remotemanager.service.SSHService;
 import dev.themajorones.remotemanager.utils.DeviceUtils;
 import dev.themajorones.remotemanager.utils.ViewUtils;
 
@@ -95,7 +93,7 @@ public class AddDeviceFragment extends Fragment {
     private void onDeleteButtonClick() {
         String deviceName = Objects.requireNonNull(nameInput.getText()).toString();
         Device device = PersistentStorageService.get().findByName(deviceName);
-        List<Device> managedDevices = new ArrayList<>();
+        List<Device> managedDevices;
 
         if (device != null) {
             managedDevices = PersistentStorageService.get().findManagedDevices(device);
@@ -196,9 +194,8 @@ public class AddDeviceFragment extends Fragment {
                 .build();
 
         try {
-            SecureShell standaloneShell = SSHService.get().getStandaloneConnection(newDevice);
-            newDevice.setOs(DeviceUtils.getOSName(standaloneShell));
-            newDevice.setMacAddress(DeviceUtils.getMacAddress(standaloneShell, newDevice.getHost()));
+            newDevice.setOs(DeviceUtils.getOSName(newDevice));
+            newDevice.setMacAddress(DeviceUtils.getMacAddress(newDevice));
             osInput.setText(newDevice.getOs());
             macAddressInput.setText(newDevice.getMacAddress());
         } catch (Exception e) {

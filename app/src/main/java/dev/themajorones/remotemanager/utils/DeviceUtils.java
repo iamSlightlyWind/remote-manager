@@ -5,11 +5,11 @@ import android.content.res.Resources;
 import androidx.window.layout.FoldingFeature;
 
 import java.util.Objects;
+import java.util.concurrent.ExecutionException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import dev.themajorones.remotemanager.entity.Device;
-import dev.themajorones.remotemanager.entity.SecureShell;
 import dev.themajorones.remotemanager.service.SSHService;
 
 public class DeviceUtils {
@@ -32,35 +32,26 @@ public class DeviceUtils {
         }
     }
 
-    public static void shutdownUnix(Device device) {
-        SecureShell shell = null;
+    private static String runCommandOnDevice(Device device, String command) {
         try {
-            shell = SSHService.get().getConnection(device);
-            try {
-                shell.runCommand("sudo shutdown -h now");
-            } catch (Exception e) {
+            return SSHService.runCommand(device, command.trim());
+        } catch (Exception e) {
+            if (!(e instanceof ExecutionException)) {
                 ViewUtils.throwNotify("Failed: ", e);
             }
-        } catch (Exception e) {
-            ViewUtils.throwNotify("Failed: ", e);
+            return "";
         }
-
     }
 
-    public static void wakeOnLanLocally(Device device) {
-        String macAddress = device.getMacAddress();
-        if (macAddress == null || macAddress.isEmpty()) {
-            ViewUtils.notify("MAC address is required for Wake on LAN");
-            return;
-        }
-        WakeOnLanUtils.wake(macAddress);
+    public static void shutdownUnix(Device device) {
+        String command = "sudo shutdown -h now";
+        runCommandOnDevice(device, command);
     }
 
-    public static String getOSName(SecureShell shell) {
-        String uname = shell.runCommand("uname -s").trim().toLowerCase();
-        if (uname.isEmpty()) {
-            return " ";
-        }
+    public static String getOSName(Device device) {
+        String command = "uname -s";
+        String uname = runCommandOnDevice(device, command);
+
         return switch (uname.toLowerCase().trim()) {
             case "linux" -> "Linux";
             case "darwin" -> "macOS";
@@ -69,15 +60,25 @@ public class DeviceUtils {
         };
     }
 
-    public static String getMacAddress(SecureShell shell, String interfaceAddress) {
-        String os = getOSName(shell);
+    public static String getMacAddress(Device device) {
+        String os = device.getOs().isEmpty() ? getOSName(device) : device.getOs();
+
+        if (os.equals("Windows") || os.equals("Unknown OS")) {
+            return "Unsupported OS";
+        }
+
+        String command = switch (os) {
+            case "Linux" -> "ip a";
+            case "macOS" -> "ifconfig -a";
+            default -> "";
+        };
+
+        String output = runCommandOnDevice(device, command);
+
         return switch (os) {
-            case "Linux" -> getMacFromLinuxIPA(shell.runCommand("ip a"), interfaceAddress);
-            case "macOS" ->
-                    getMacFromMacIfconfig(shell.runCommand("ifconfig -a"), interfaceAddress);
-            case "Windows" ->
-                    shell.runCommand("getmac /v /fo csv").split(",")[0].replaceAll("\"", "");
-            default -> throw new UnsupportedOperationException("Unsupported OS: " + os);
+            case "Linux" -> getMacFromLinuxIPA(output, device.getHost());
+            case "macOS" -> getMacFromMacIfconfig(output, device.getHost());
+            default -> "";
         };
     }
 
@@ -101,7 +102,7 @@ public class DeviceUtils {
                 }
             }
         }
-        return null;
+        return "Can't determine MAC address";
     }
 
     public static String getMacFromMacIfconfig(String ifconfigOutput, String interfaceAddress) {
@@ -127,6 +128,15 @@ public class DeviceUtils {
             }
         }
         return null;
+    }
+
+    public static void wakeOnLanLocally(Device device) {
+        String macAddress = device.getMacAddress();
+        if (macAddress == null || macAddress.isEmpty()) {
+            ViewUtils.notify("MAC address is required for Wake on LAN");
+            return;
+        }
+        WakeOnLanUtils.wake(macAddress);
     }
 
     public static boolean isFolded(FoldingFeature foldingFeature) {

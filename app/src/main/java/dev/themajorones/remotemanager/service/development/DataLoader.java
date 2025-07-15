@@ -9,7 +9,6 @@ import dev.themajorones.remotemanager.service.SSHService;
 import dev.themajorones.remotemanager.utils.ViewUtils;
 
 public class DataLoader {
-    private static final SSHService sshService = SSHService.get();
 
     public static boolean loadData() {
         PersistentStorageService.get().deleteAll();
