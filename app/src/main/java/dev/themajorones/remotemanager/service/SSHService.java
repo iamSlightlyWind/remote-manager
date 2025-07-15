@@ -117,7 +117,7 @@ public class SSHService {
                     try {
                         forwarder.listen();
                     } catch (Exception e) {
-                        ViewUtils.throwNotify("Nested thread failed: ", e);
+
                     }
                 }, "port-forward-listener");
                 listener.setDaemon(true);
@@ -153,7 +153,7 @@ public class SSHService {
         });
 
         try {
-            return future.get(60, TimeUnit.SECONDS);
+            return future.get(10, TimeUnit.SECONDS);
         } catch (Exception e) {
             if (!(e instanceof ExecutionException)) {
                 if (e instanceof TimeoutException) {
@@ -163,6 +163,37 @@ public class SSHService {
                 }
             }
             return "";
+        }
+    }
+
+    public static boolean commandExists(Device device, String command) throws Exception{
+        SSHClient ssh = connect(device);
+        if (ssh == null) {
+            return false;
+        }
+
+        String baseCommand = command.trim().split("\\s+")[0];
+        String whichCommand = "which " + baseCommand;
+
+        Future<Boolean> future = io.submit(() -> {
+            try (Session session = ssh.startSession()) {
+                Session.Command sessionCommand = session.exec(whichCommand);
+                sessionCommand.join();
+                return sessionCommand.getExitStatus() == 0;
+            } finally {
+                ssh.disconnect();
+            }
+        });
+
+        try {
+            return future.get(5, TimeUnit.SECONDS);
+        } catch (Exception e) {
+            if (e instanceof TimeoutException) {
+                ViewUtils.notify("Failed: Timed out after 5 seconds");
+            } else {
+                ViewUtils.throwNotify("Failed: ", e);
+            }
+            return false;
         }
     }
 }

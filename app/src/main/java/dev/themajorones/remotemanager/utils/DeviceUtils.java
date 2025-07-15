@@ -54,6 +54,29 @@ public class DeviceUtils {
         }
     }
 
+    public static void wolManagedDevice(Device managingDevice, Device managedDevice) {
+        String macAddress = managedDevice.getMacAddress();
+        if (!isMacAddressValid(macAddress)) {
+            ViewUtils.notify("Invalid MAC address");
+            return;
+        }
+
+        String[] wolTools = {"ether-wake", "wol"};
+        try {
+            for (String tool : wolTools) {
+                if (SSHService.commandExists(managingDevice, tool)) {
+                    ViewUtils.notify("Using " + tool);
+                    String command = String.format("%s %s", tool, macAddress);
+                    runCommandOnDevice(managingDevice, command);
+                    return;
+                }
+            }
+            ViewUtils.notify("No suitable WOL tool found");
+        } catch (Exception e) {
+            ViewUtils.throwNotify("Failed: ", e);
+        }
+    }
+
     public static void shutdownManagedDevice(Device managingDevice, Device managedDevice) {
         String command = "sudo shutdown -h now";
         runNestedCommandOnDevice(managingDevice, managedDevice, command);
@@ -148,21 +171,24 @@ public class DeviceUtils {
 
     public static void wakeOnLanLocally(Device device) {
         String macAddress = device.getMacAddress();
-        if (macAddress == null || macAddress.isEmpty() || macAddress.equals("Can't determine MAC address")) {
-            ViewUtils.notify("MAC address is required for Wake on LAN");
-            return;
-        }
-
-        Pattern macPattern = Pattern.compile("^(?:[0-9A-Fa-f]{2}:){5}[0-9A-Fa-f]{2}$");
-        if (!macPattern.matcher(macAddress).matches()) {
-            ViewUtils.notify("Invalid MAC address format");
+        if (!isMacAddressValid(macAddress)) {
+            ViewUtils.notify("Invalid MAC address");
             return;
         }
         WakeOnLanUtils.wake(macAddress);
     }
 
+    private static boolean isMacAddressValid(String macAddress) {
+        if (macAddress == null || macAddress.isEmpty()) {
+            return false;
+        }
+        Pattern macPattern = Pattern.compile("^(?:[0-9A-Fa-f]{2}:){5}[0-9A-Fa-f]{2}$");
+        return macPattern.matcher(macAddress).matches();
+    }
+
     public static boolean isFolded(FoldingFeature foldingFeature) {
-        return isFoldable(foldingFeature) && foldingFeature.getState() != FoldingFeature.State.FLAT && foldingFeature.getState() != FoldingFeature.State.HALF_OPENED;
+        return isFoldable(foldingFeature) && foldingFeature.getState() != FoldingFeature.State.FLAT
+                && foldingFeature.getState() != FoldingFeature.State.HALF_OPENED;
     }
 
     public static boolean isFoldedHalfway(FoldingFeature foldingFeature) {

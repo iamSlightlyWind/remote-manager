@@ -46,14 +46,13 @@ public class ManagedDeviceAdapter extends ArrayAdapter<Device> {
         } else {
             holder = (ViewHolder) convertView.getTag();
         }
+
         Device device = getItem(position);
         holder.tvName.setText(Objects.requireNonNull(device).getName());
         String childName = device.getName();
         String parentName = parentDevice.getName();
-        holder.btnBoot.setOnClickListener(v -> ViewUtils.notify("Boot pressed for " + childName + " managed by " + parentName));
-        holder.btnShutdown.setOnClickListener(v -> DeviceUtils.shutdownManagedDevice(
-                PersistentStorageService.get().findByName(parentName),
-                PersistentStorageService.get().findByName(childName)));
+        holder.btnBoot.setOnClickListener(v -> DeviceUtils.wolManagedDevice(PersistentStorageService.get().findByName(parentName), PersistentStorageService.get().findByName(childName)));
+        holder.btnShutdown.setOnClickListener(v -> DeviceUtils.shutdownManagedDevice(PersistentStorageService.get().findByName(parentName), PersistentStorageService.get().findByName(childName)));
         holder.btnRemove.setOnClickListener(v -> {
             device.removesManagingDevice(parentDevice);
             PersistentStorageService.get().save(device);
