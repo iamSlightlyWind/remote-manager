@@ -14,6 +14,7 @@ import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.view.WindowCompat;
 import androidx.fragment.app.Fragment;
 import androidx.window.layout.FoldingFeature;
 
@@ -42,6 +43,7 @@ public class MainActivity extends AppCompatActivity {
     @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        WindowCompat.setDecorFitsSystemWindows(getWindow(), true);
         SettingsFragment.applyLanguageSettings(this);
         SettingsFragment.applyThemeSettings(this);
         super.onCreate(savedInstanceState);
