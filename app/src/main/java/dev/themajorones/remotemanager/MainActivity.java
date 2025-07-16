@@ -122,14 +122,15 @@ public class MainActivity extends AppCompatActivity {
         currentManagingDevices = new ArrayList<>();
 
         getSupportFragmentManager().beginTransaction()
-                .replace(R.id.mainContent, new Fragment())
-                .commitNow();
+                .replace(R.id.mainContent, new Fragment()).commitNow();
 
         Button addManagingDeviceButton = findViewById(R.id.addManagingDeviceButton);
-        addManagingDeviceButton.setOnClickListener(v ->
-                showDeviceChoiceDialog(this, PersistentStorageService.getRemainingManagingDevices(), selected -> {
-                    ViewUtils.notify("You chose: " + selected.getName());
-                }));
+        addManagingDeviceButton.setOnClickListener(v -> showDeviceChoiceDialog(this, "Select a managing device", PersistentStorageService.getNonManagingDevices(), selected -> {
+            showDeviceChoiceDialog(context, "Select a device to manage", PersistentStorageService.minus(PersistentStorageService.get().findAll(), selected), device -> {
+                device.addManagingDevice(selected);
+                PersistentStorageService.get().save(device);
+            });
+        }));
         handler.post(managingDeviceListUpdater);
     }
 

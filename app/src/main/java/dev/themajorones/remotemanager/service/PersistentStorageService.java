@@ -156,25 +156,11 @@ public class PersistentStorageService {
         return managedDevices;
     }
 
-    public static List<Device> getRemainingManagingDevices() {
-        List<Device> devices = get().findAll();
-        List<Device> managingDevices = findAllManagingDevices();
-        List<Device> remainingManagingDevices = new ArrayList<>();
-
-        for (Device device : devices) {
-            boolean alreadyManaging = false;
-            for (Device managingDevice : managingDevices) {
-                if (managingDevice.equals(device)) {
-                    alreadyManaging = true;
-                    break;
-                }
-            }
-            if (!alreadyManaging) {
-                remainingManagingDevices.add(device);
-            }
-        }
-
-        return remainingManagingDevices;
+    public static List<Device> minus(List<Device> devices, Device device) {
+        List<Device> allDevices = get().findAll();
+        if (allDevices.contains(device))
+            allDevices.remove(device);
+        return allDevices;
     }
 
     public static List<Device> getRemainingManagedDevices(Device managingDevice) {
@@ -206,6 +192,19 @@ public class PersistentStorageService {
         }
 
         return remainingManagedDevices;
+    }
+
+    public static List<Device> getNonManagingDevices() {
+        List<Device> devices = get().findAll();
+        List<Device> managingDevices = findAllManagingDevices();
+        List<Device> nonManagingDevices = new ArrayList<>();
+
+        for (Device device : devices) {
+            if (!managingDevices.contains(device)) {
+                nonManagingDevices.add(device);
+            }
+        }
+        return nonManagingDevices;
     }
 
     public Device save(Device device) {
