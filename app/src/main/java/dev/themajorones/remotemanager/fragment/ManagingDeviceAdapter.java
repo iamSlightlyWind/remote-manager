@@ -93,6 +93,7 @@ public class ManagingDeviceAdapter extends ArrayAdapter<Device> {
         holder.manageingDevice.setOnClickListener(toggleListener);
         holder.addManagedDevice.setOnClickListener(v -> DialogUtils.showDeviceChoiceDialog(
                 getContext(),
+                "Select a device to manage",
                 PersistentStorageService.getRemainingManagedDevices(device),
                 selected -> {
                     selected.addManagingDevice(device);

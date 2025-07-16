@@ -16,6 +16,7 @@ public class DialogUtils {
 
     public static void showDeviceChoiceDialog(
             @NonNull Context context,
+            @NonNull String title,
             @NonNull List<Device> devices,
             @NonNull OnDeviceSelectedListener listener
     ) {
@@ -25,7 +26,7 @@ public class DialogUtils {
         }
 
         new AlertDialog.Builder(context)
-                .setTitle("Select a device")
+                .setTitle(title)
                 .setItems(names, (dialog, which) -> {
                     listener.onDeviceSelected(devices.get(which));
                 })
